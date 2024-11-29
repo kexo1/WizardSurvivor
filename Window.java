@@ -4,7 +4,7 @@ import javax.swing.ImageIcon;
 
 public class Window {
 
-    public Window(int width, int height, Game game, String title) {
+    public Window(int width, int height, GameLoop game, String title) {
         // Create a new window and set its size
         JFrame frame = new JFrame(title);
         frame.setPreferredSize(new Dimension(width, height));

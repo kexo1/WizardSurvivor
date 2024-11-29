@@ -3,31 +3,31 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.Color;
 
-public class Game extends Canvas implements Runnable {
+public class GameLoop extends Canvas implements Runnable {
     
     private boolean isRunning = false;
+    private ObjManager manager;
     private Thread thread;
-    private Handler handler;
+    private int FPSLimit = 144;
 
     public static void main(String[] args) {
-        // Create a new game
-        new Game();
+        new GameLoop();
     }
 
-    // Partially inspired by https://curious.com/realtutsgml
-    public Game() {
+    
+    public GameLoop() {
         // Create a new window
-        new Window(1200, 660, this, "Wizard Survivor");
+        new Window(1080, 1080, this, "Wizard Survivor");
         start();
-        // Create a new handler
-        handler = new Handler();
-        handler.addObj(new Box(100, 100, ID.Block));
-        handler.addObj(new Player(100, 100, ID.Player, handler));
 
-        this.addKeyListener(new KeyInput(handler));
+        manager = new ObjManager();
+        manager.addObj(new Box(100, 100, GameObjID.Block));
+        manager.addObj(new Player(100, 100, GameObjID.Player, manager));
+
+        this.addKeyListener(new KeyInput(manager));
     }
 
-    // Game loop made by Notch (Used by many game developers)
+    // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
     public void run() {
 
         this.requestFocus();
@@ -37,15 +37,24 @@ public class Game extends Canvas implements Runnable {
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
+        long frameTime = 1000 / FPSLimit;
 
         while (isRunning) {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
+
             while (delta >= 1) {
                 tick();
                 delta--;
             }
+
+            try {
+                Thread.sleep(frameTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             render();
             frames++;
 
@@ -59,7 +68,7 @@ public class Game extends Canvas implements Runnable {
         stop();
     }
 
-    // Taken from https://curious.com/realtutsgml
+    // Starting: https://stackoverflow.com/questions/18283199/java-main-game-loop
     private void start() {
         // Start the game loop
         if (isRunning) return;
@@ -69,7 +78,7 @@ public class Game extends Canvas implements Runnable {
         thread.start();
     }
 
-    // Taken from https://curious.com/realtutsgml
+    // Stopping thread: https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
     private void stop() {
         // Stop the game loop
         if (!isRunning) return;
@@ -82,30 +91,29 @@ public class Game extends Canvas implements Runnable {
         }
     }
 
-    // Taken from https://curious.com/realtutsgml
+    // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
     public void tick() {
-        handler.tick();
+        manager.tick();
     }
 
-    // Taken from https://curious.com/realtutsgml
+    // Rendering: https://stackoverflow.com/questions/47377513/getting-graphics-object-to-draw-with-buffer-strategy
     public void render() {
-        // Render game graphics
-        BufferStrategy bs = this.getBufferStrategy();
-        if (bs == null) {
+        BufferStrategy buffer = this.getBufferStrategy();
+        if (buffer == null) {
             // Preloads 3 frames
             this.createBufferStrategy(3);
             return;
         }
 
-        Graphics g = bs.getDrawGraphics();
+        Graphics graphics = buffer.getDrawGraphics();
 
         // Draw background
-        g.setColor(Color.black);
-        g.fillRect(0, 0, 1200, 660);
-        handler.render(g);
+        graphics.setColor(Color.white);
+        graphics.fillRect(0, 0, 1080, 1080);
+        manager.render(graphics);
 
-        g.dispose();
-        bs.show();
+        graphics.dispose();
+        buffer.show();
     }
     
 }

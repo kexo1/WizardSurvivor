@@ -3,40 +3,49 @@ import java.awt.event.KeyEvent;
 
 public class KeyInput extends KeyAdapter {
     
-    Handler handler;
+    ObjManager manager;
 
-    public KeyInput(Handler handler) {
-        this.handler = handler;
+    public KeyInput(ObjManager manager) {
+        this.manager = manager;
     }
 
-    // Taken from https://curious.com/realtutsgml
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
+    public void keyPressed(KeyEvent event) {
+        int key = event.getKeyCode();
         
-        for (int i = 0; i < handler.obj.size(); i++) {
-            GameObj tempObj = handler.obj.get(i);
-            if (tempObj.getId() == ID.Player) {
-                if (key == KeyEvent.VK_W) handler.setUp(true);
-                if (key == KeyEvent.VK_S) handler.setDown(true);
-                if (key == KeyEvent.VK_A) handler.setLeft(true);
-                if (key == KeyEvent.VK_D) handler.setRight(true);
-            }
+        for (int i = 0; i < manager.obj.size(); i++) {
+
+            GameObj obj = manager.obj.get(i);
+            if (obj.getId() != GameObjID.Player)
+                continue;
+            
+            if (key == KeyEvent.VK_W)
+                manager.setUp(true);
+            if (key == KeyEvent.VK_S)
+                manager.setDown(true);
+            if (key == KeyEvent.VK_A)
+                manager.setLeft(true);
+            if (key == KeyEvent.VK_D)
+                manager.setRight(true);
         }
     }
 
-    // Taken from https://curious.com/realtutsgml
-    @Override
-    public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
-        for (int i = 0; i < handler.obj.size(); i++) {
-            GameObj tempObj = handler.obj.get(i);
-            if (tempObj.getId() == ID.Player) {
-                if (key == KeyEvent.VK_W) handler.setUp(false);
-                if (key == KeyEvent.VK_S) handler.setDown(false);
-                if (key == KeyEvent.VK_A) handler.setLeft(false);
-                if (key == KeyEvent.VK_D) handler.setRight(false);
-            }
+    public void keyReleased(KeyEvent event) {
+        int key = event.getKeyCode();
+
+        for (int i = 0; i < manager.obj.size(); i++) {
+            GameObj obj = manager.obj.get(i);
+
+            if (obj.getId() != GameObjID.Player)
+                continue;
+
+            if (key == KeyEvent.VK_W)
+                manager.setUp(false);
+            if (key == KeyEvent.VK_S)
+                manager.setDown(false);
+            if (key == KeyEvent.VK_A)
+                manager.setLeft(false);
+            if (key == KeyEvent.VK_D)
+                manager.setRight(false);
         }
     }
 }

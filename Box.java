@@ -4,8 +4,8 @@ import java.awt.Rectangle;
 
 public class Box extends GameObj {
 
-    public Box(int x, int y, ID id) {
-        super(x, y, id);
+    public Box(int x, int y, GameObjID gameObjID) {
+        super(x, y, gameObjID);
         velX = 1;
     }
 
@@ -14,9 +14,9 @@ public class Box extends GameObj {
         y += velY;
     }
 
-    public void render(Graphics g) {
-        g.setColor(Color.red);
-        g.fillRect(x, y, 32, 32);
+    public void render(Graphics graphics) {
+        graphics.setColor(Color.red);
+        graphics.fillRect(x, y, 32, 32);
     }
 
     public Rectangle getBounds() {

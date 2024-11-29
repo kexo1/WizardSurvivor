@@ -1,26 +1,27 @@
 import java.util.LinkedList;
 import java.awt.Graphics;
 
-public class Handler {
+public class ObjManager {
     
-    LinkedList<GameObj> obj = new LinkedList<GameObj>();
-    private boolean up = false, down = false, left = false, right = false;
+    public LinkedList<GameObj> obj = new LinkedList<GameObj>();
+    private boolean up = false;
+    private boolean down = false;
+    private boolean left = false;
+    private boolean right = false;
 
     public void tick() {
-        // Get all objects
         for (int i = 0; i < obj.size(); i++) {
             GameObj tempObj = obj.get(i);
-            // Tick the object
             tempObj.tick();
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics graphics) {
         // Get all objects
         for (int i = 0; i < obj.size(); i++) {
             GameObj tempObj = obj.get(i);
             // Render the object
-            tempObj.render(g);
+            tempObj.render(graphics);
         }
 
     }

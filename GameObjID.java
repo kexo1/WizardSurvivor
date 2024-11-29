@@ -1,5 +1,5 @@
 
-public enum ID {
+public enum GameObjID {
     
     Player(),
     Supply(),

@@ -5,9 +5,9 @@ public abstract class GameObj {
 
     protected int x, y;
     protected float velX = 0, velY = 0;
-    protected ID id;
+    protected GameObjID id;
 
-    public GameObj(int x, int y, ID id) {
+    public GameObj(int x, int y, GameObjID id) {
         this.x = x;
         this.y = y;
         this.id = id;
@@ -18,7 +18,7 @@ public abstract class GameObj {
     public abstract Rectangle getBounds();
 
     // Getters
-    public ID getId() {
+    public GameObjID getId() {
         return id;
     }
 
@@ -39,7 +39,7 @@ public abstract class GameObj {
     }
 
     // Setters
-    public void setId(ID id) {
+    public void setId(GameObjID id) {
         this.id = id;
     }
 
