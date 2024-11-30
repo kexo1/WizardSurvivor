@@ -11,21 +11,11 @@ public class Orb extends GameObj {
     public Orb(int x, int y, GameObjID gameObjID, ObjManager manager, int mouseX, int mouseY) {
         super(x, y, gameObjID, manager);
         this.manager = manager;
-
-        double dx = mouseX - x;
-        double dy = mouseY - y;
-
-        // Length of the vector
-        double length = Math.sqrt(dx * dx + dy * dy);
-        double normalizedX = dx / length;
-        double normalizedY = dy / length;
-        // Values between -1 and 1
-        velX = (float)(normalizedX * speed);
-        velY = (float)(normalizedY * speed);
-
+        normalizeDirection(mouseX, mouseY);
     }
 
     public void tick() {
+
         updatePosition();
         collisionDetection();
         timer();
@@ -58,9 +48,19 @@ public class Orb extends GameObj {
                 
             if (getBounds().intersects(obj.getBounds())) 
                 manager.removeObj(this);
-
         }
     }
 
-    
+    private void normalizeDirection(int mouseX, int mouseY) {
+        double dx = mouseX - x;
+        double dy = mouseY - y;
+
+        // Length of the vector
+        double length = Math.sqrt(dx * dx + dy * dy);
+        double normalizedX = dx / length;
+        double normalizedY = dy / length;
+        // Values between -1 and 1
+        velX = (float)(normalizedX * speed);
+        velY = (float)(normalizedY * speed);
+    }
 }
