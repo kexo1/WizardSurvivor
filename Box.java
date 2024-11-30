@@ -4,14 +4,12 @@ import java.awt.Rectangle;
 
 public class Box extends GameObj {
 
-    public Box(int x, int y, GameObjID gameObjID) {
-        super(x, y, gameObjID);
-        velX = 1;
+    public Box(int x, int y, GameObjID gameObjID, ObjManager manager) {
+        super(x, y, gameObjID, manager);
     }
 
     public void tick() {
-        x += velX;
-        y += velY;
+
     }
 
     public void render(Graphics graphics) {

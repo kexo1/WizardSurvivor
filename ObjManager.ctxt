@@ -1,0 +1,27 @@
+#BlueJ class context
+comment0.target=ObjManager
+comment1.params=
+comment1.target=void\ tick()
+comment10.params=down
+comment10.target=void\ setDown(boolean)
+comment11.params=left
+comment11.target=void\ setLeft(boolean)
+comment12.params=right
+comment12.target=void\ setRight(boolean)
+comment2.params=graphics
+comment2.target=void\ render(java.awt.Graphics)
+comment3.params=tempObj
+comment3.target=void\ addObj(GameObj)
+comment4.params=tempObj
+comment4.target=void\ removeObj(GameObj)
+comment5.params=
+comment5.target=boolean\ isUp()
+comment6.params=
+comment6.target=boolean\ isDown()
+comment7.params=
+comment7.target=boolean\ isLeft()
+comment8.params=
+comment8.target=boolean\ isRight()
+comment9.params=up
+comment9.target=void\ setUp(boolean)
+numComments=13

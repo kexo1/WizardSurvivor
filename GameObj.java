@@ -6,8 +6,8 @@ public abstract class GameObj {
     protected int x, y;
     protected float velX = 0, velY = 0;
     protected GameObjID id;
-
-    public GameObj(int x, int y, GameObjID id) {
+    
+    public GameObj(int x, int y, GameObjID id, ObjManager manager) {
         this.x = x;
         this.y = y;
         this.id = id;

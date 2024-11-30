@@ -21,10 +21,11 @@ public class GameLoop extends Canvas implements Runnable {
         start();
 
         manager = new ObjManager();
-        manager.addObj(new Box(100, 100, GameObjID.Block));
+        manager.addObj(new Box(200, 100, GameObjID.Block, manager));
         manager.addObj(new Player(100, 100, GameObjID.Player, manager));
 
         this.addKeyListener(new KeyInput(manager));
+        this.addMouseListener(new MouseInput(manager));
     }
 
     // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
@@ -35,8 +36,10 @@ public class GameLoop extends Canvas implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
+        /*
         long timer = System.currentTimeMillis();
         int frames = 0;
+        */
         long frameTime = 1000 / FPSLimit;
 
         while (isRunning) {
@@ -56,6 +59,8 @@ public class GameLoop extends Canvas implements Runnable {
             }
 
             render();
+
+            /* 
             frames++;
 
             if (System.currentTimeMillis() - timer > 1000) {
@@ -63,6 +68,7 @@ public class GameLoop extends Canvas implements Runnable {
                 System.out.println("FPS: " + frames);
                 frames = 0;
             }
+            */
             
         }
         stop();

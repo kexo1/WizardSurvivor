@@ -1,0 +1,5 @@
+#BlueJ class context
+comment0.target=Window
+comment1.params=width\ height\ game\ title
+comment1.target=Window(int,\ int,\ GameLoop,\ java.lang.String)
+numComments=2

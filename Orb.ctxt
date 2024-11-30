@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Orb
+comment1.params=x\ y\ gameObjID\ manager\ mouseX\ mouseY
+comment1.target=Orb(int,\ int,\ GameObjID,\ ObjManager,\ int,\ int)
+comment2.params=
+comment2.target=void\ tick()
+comment3.params=
+comment3.target=void\ timer()
+comment4.params=graphics
+comment4.target=void\ render(java.awt.Graphics)
+comment5.params=
+comment5.target=java.awt.Rectangle\ getBounds()
+numComments=6
