@@ -26,6 +26,15 @@ public class ObjManager {
 
     }
 
+    public Player getPlayer() {
+        for (int i = 0; i < obj.size(); i++) {
+            GameObj tempObj = obj.get(i);
+            if (tempObj.getId() == GameObjID.Player)
+                return (Player) tempObj;
+        }
+        return null;
+    }
+
     public void addObj(GameObj tempObj) {
         // Add an object
         obj.add(tempObj);

@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=Enemy
+comment1.params=x\ y\ gameObjID\ manager\ player
+comment1.target=Enemy(int,\ int,\ GameObjID,\ ObjManager,\ Player)
+comment2.params=
+comment2.target=void\ tick()
+comment3.params=graphics
+comment3.target=void\ render(java.awt.Graphics)
+comment4.params=
+comment4.target=java.awt.Rectangle\ getBounds()
+comment5.params=
+comment5.target=void\ collisionDetection()
+comment6.params=damage
+comment6.target=void\ takeDamage(int)
+numComments=7

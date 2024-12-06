@@ -17,7 +17,6 @@ public class Orb extends GameObj {
     public void tick() {
 
         updatePosition();
-        collisionDetection();
         timer();
     }
     
@@ -38,17 +37,6 @@ public class Orb extends GameObj {
     private void timer() {
         if (System.currentTimeMillis() - timer > 2000)
             manager.removeObj(this);
-    }
-
-    private void collisionDetection() {
-        for (int i = 0; i < manager.obj.size(); i++) {
-            GameObj obj = manager.obj.get(i);
-            if (obj.getId() != GameObjID.Block) 
-                continue;
-                
-            if (getBounds().intersects(obj.getBounds())) 
-                manager.removeObj(this);
-        }
     }
 
     private void normalizeDirection(int mouseX, int mouseY) {

@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 public class Player extends GameObj {
 
     ObjManager manager;
+    private int damage = 34;
 
     public Player(int x, int y, GameObjID id, ObjManager manager) {
         super(x, y, id, manager);
@@ -31,22 +32,19 @@ public class Player extends GameObj {
 
     private void movementVelocity() {
 
-        if (manager.isUp()) {
+        if (manager.isUp())
             velY = -5;
-        } else if (manager.isDown()) {
+        else if (manager.isDown())
             velY = 5;
-        } else {
+        else
             velY = 0;
-        }
 
-        if (manager.isRight()) {
+        if (manager.isRight())
             velX = 5;
-        } else if (manager.isLeft()) {
+        else if (manager.isLeft())
             velX = -5;
-        } else {
+        else 
             velX = 0;
-
-        }
     }
 
     private void collisionDetection() {
@@ -59,6 +57,18 @@ public class Player extends GameObj {
                 y += velY * -1;
             }
         }
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getDamage() {
+        return damage;
     }
     
 

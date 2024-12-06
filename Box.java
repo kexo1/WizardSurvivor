@@ -13,7 +13,7 @@ public class Box extends GameObj {
     }
 
     public void render(Graphics graphics) {
-        graphics.setColor(Color.red);
+        graphics.setColor(Color.green);
         graphics.fillRect(x, y, 32, 32);
     }
 

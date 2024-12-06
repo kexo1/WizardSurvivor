@@ -21,8 +21,9 @@ public class GameLoop extends Canvas implements Runnable {
         start();
 
         manager = new ObjManager();
-        manager.addObj(new Box(200, 100, GameObjID.Block, manager));
         manager.addObj(new Player(100, 100, GameObjID.Player, manager));
+        manager.addObj(new Box(200, 100, GameObjID.Block, manager));
+        manager.addObj(new Enemy(300, 100, GameObjID.Enemy, manager, manager.getPlayer()));
 
         this.addKeyListener(new KeyInput(manager));
         this.addMouseListener(new MouseInput(manager));
