@@ -14,8 +14,8 @@ public class SpriteSheet {
         }
     }
 
-    public BufferedImage getImage(int imgSize, int col, int row, int width, int height) {
-        return this.spriteSheet.getSubimage((col * imgSize) - imgSize, (row * imgSize) - imgSize, width, height);
+    public BufferedImage getImage(int imgSize, int col, int row, int width, int height, int offsetX) {
+        return this.spriteSheet.getSubimage((col * (imgSize)) - imgSize + offsetX, (row * imgSize) - imgSize, width, height);
     }
 
 }

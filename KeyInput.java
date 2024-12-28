@@ -14,8 +14,8 @@ public class KeyInput extends KeyAdapter {
         int key = event.getKeyCode();
         
         for (int i = 0; i < this.manager.getObjList().size(); i++) {
-
             GameObj obj = this.manager.getObjList().get(i);
+
             if (obj.getId() != GameObjID.Player) {
                 continue;
             }

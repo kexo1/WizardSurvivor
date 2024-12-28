@@ -11,7 +11,7 @@ public class GameLoop extends Canvas implements Runnable {
 
     // Attributes
     private boolean isRunning = false;
-    private int fpsLimit = 144;
+    private int fpsLimit = 141;
 
     public static void main(String[] args) {
         new GameLoop();
@@ -35,7 +35,7 @@ public class GameLoop extends Canvas implements Runnable {
         this.manager.setPlayer(player);
 
         SpriteSheet spriteSheet2 = new SpriteSheet("/sprites/heal.png");
-        this.manager.addObj(new Box(200, 100, GameObjID.Supply, this.manager, spriteSheet2));
+        this.manager.addObj(new Heal(200, 100, GameObjID.Supply, this.manager, spriteSheet2));
 
         SpriteSheet spriteSheet3 = new SpriteSheet("/sprites/slime-spritesheet.png");
         this.manager.addObj(new Enemy(300, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet3));
@@ -77,16 +77,6 @@ public class GameLoop extends Canvas implements Runnable {
             }
 
             this.render();
-
-            /* 
-            frames++;
-
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
-                System.out.println("FPS: " + frames);
-                frames = 0;
-            }
-            */
         }
         this.stop();
     }

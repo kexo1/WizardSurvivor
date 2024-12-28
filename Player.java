@@ -6,7 +6,10 @@ public class Player extends GameObj {
 
     // References
     private ObjManager manager;
-    private BufferedImage sprite;
+    private BufferedImage[] animIdle = new BufferedImage[2];
+    private BufferedImage[] animWalk = new BufferedImage[4];
+    private SpriteAnimation spriteAnimationIdle;
+    private SpriteAnimation spriteAnimationWalk;
 
     // Attributes
     private int hp = 100;
@@ -15,13 +18,23 @@ public class Player extends GameObj {
     private int velY;
     private int x;
     private int y;
+    private int lastVelX;
 
     public Player(int x, int y, GameObjID id, ObjManager manager, SpriteSheet spriteSheet) {
         super(x, y, id, manager, spriteSheet);
         this.manager = manager;
         this.x = x;
         this.y = y;
-        this.sprite = spriteSheet.getImage(64, 1, 1, 64, 64);
+
+        this.animIdle[0] = spriteSheet.getImage(64, 1, 1, 32, 64, 0);
+        this.animIdle[1] = spriteSheet.getImage(64, 1, 1, 32, 64, 32);
+        this.spriteAnimationIdle = new SpriteAnimation(this.animIdle, this.x, this.y, 32, 64);
+
+        this.animWalk[0] = spriteSheet.getImage(64, 1, 2, 32, 64, 0);
+        this.animWalk[1] = spriteSheet.getImage(64, 1, 2, 32, 64, 32);
+        this.animWalk[2] = spriteSheet.getImage(64, 2, 2, 32, 64, 0);
+        this.animWalk[3] = spriteSheet.getImage(64, 2, 2, 32, 64, 32);
+        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 64);
     }
 
     public void tick() {
@@ -31,10 +44,18 @@ public class Player extends GameObj {
         this.collisionDetection();
         this.movementVelocity();
         this.isOutOfBounds();
+        this.shouldFlipImage();
     }
 
     public void render(Graphics graphics) {
-        graphics.drawImage(this.sprite, this.x, this.y, null);
+
+        if (this.velX == 0 && this.velY == 0) {
+            this.spriteAnimationIdle.setXY(this.x, this.y);
+            this.spriteAnimationIdle.animateSprite(graphics, this.shouldFlipImage());
+        } else {
+            this.spriteAnimationWalk.setXY(this.x, this.y);
+            this.spriteAnimationWalk.animateSprite(graphics, this.shouldFlipImage());
+        }
     }
 
     public Rectangle getBounds() {
@@ -58,6 +79,14 @@ public class Player extends GameObj {
         } else {
             this.velX = 0;
         }
+    }
+
+    private boolean shouldFlipImage() {
+        if (this.velX == 0) {
+            return this.lastVelX < 0;
+        }
+        this.lastVelX = this.velX;
+        return this.lastVelX < 0;
     }
 
     private void collisionDetection() {
