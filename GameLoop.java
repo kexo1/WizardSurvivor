@@ -5,28 +5,45 @@ import java.awt.Color;
 
 public class GameLoop extends Canvas implements Runnable {
     
-    private boolean isRunning = false;
+    // References
     private ObjManager manager;
     private Thread thread;
-    private int FPSLimit = 144;
+
+    // Attributes
+    private boolean isRunning = false;
+    private int fpsLimit = 144;
 
     public static void main(String[] args) {
         new GameLoop();
     }
 
-    
     public GameLoop() {
         // Create a new window
         new Window(1080, 1080, this, "Wizard Survivor");
-        start();
+        // Initialize objects and input
+        this.init();
+        // Start the game loop
+        this.start();
+    }
 
-        manager = new ObjManager();
-        manager.addObj(new Player(100, 100, GameObjID.Player, manager));
-        manager.addObj(new Box(200, 100, GameObjID.Block, manager));
-        manager.addObj(new Enemy(300, 100, GameObjID.Enemy, manager, manager.getPlayer()));
+    private void init() {
+        this.manager = new ObjManager();
 
-        this.addKeyListener(new KeyInput(manager));
-        this.addMouseListener(new MouseInput(manager));
+        SpriteSheet spriteSheet1 = new SpriteSheet("/sprites/wizard_spritesheet.png");
+        Player player = new Player(100, 100, GameObjID.Player, this.manager, spriteSheet1);
+        this.manager.addObj(player);
+        this.manager.setPlayer(player);
+
+        SpriteSheet spriteSheet2 = new SpriteSheet("/sprites/heal.png");
+        this.manager.addObj(new Box(200, 100, GameObjID.Supply, this.manager, spriteSheet2));
+
+        SpriteSheet spriteSheet3 = new SpriteSheet("/sprites/slime-spritesheet.png");
+        this.manager.addObj(new Enemy(300, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet3));
+
+        this.addKeyListener(new KeyInput(this.manager));
+
+        SpriteSheet spriteSheet4 = new SpriteSheet("/sprites/slime-spritesheet.png");
+        this.addMouseListener(new MouseInput(this.manager, spriteSheet4));
     }
 
     // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
@@ -41,15 +58,15 @@ public class GameLoop extends Canvas implements Runnable {
         long timer = System.currentTimeMillis();
         int frames = 0;
         */
-        long frameTime = 1000 / FPSLimit;
+        long frameTime = 1000 / this.fpsLimit;
 
-        while (isRunning) {
+        while (this.isRunning) {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
 
             while (delta >= 1) {
-                tick();
+                this.tick();
                 delta--;
             }
 
@@ -59,7 +76,7 @@ public class GameLoop extends Canvas implements Runnable {
                 e.printStackTrace();
             }
 
-            render();
+            this.render();
 
             /* 
             frames++;
@@ -70,29 +87,34 @@ public class GameLoop extends Canvas implements Runnable {
                 frames = 0;
             }
             */
-            
         }
-        stop();
+        this.stop();
     }
 
     // Starting: https://stackoverflow.com/questions/18283199/java-main-game-loop
     private void start() {
         // Start the game loop
-        if (isRunning) return;
-        isRunning = true;
+        if (this.isRunning) {
+            return;
+        }
+        this.isRunning = true;
         // Create a new thread and start it
-        thread = new Thread(this);
-        thread.start();
+        this.thread = new Thread(this);
+        this.thread.start();
     }
 
     // Stopping thread: https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
     private void stop() {
         // Stop the game loop
-        if (!isRunning) return;
-        isRunning = false;
+        if (!this.isRunning) {
+            return;
+        }
+
+        this.isRunning = false;
+
         try {
             // Wait for the thread to die
-            thread.join();
+            this.thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,7 +122,7 @@ public class GameLoop extends Canvas implements Runnable {
 
     // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
     public void tick() {
-        manager.tick();
+        this.manager.tick();
     }
 
     // Rendering: https://stackoverflow.com/questions/47377513/getting-graphics-object-to-draw-with-buffer-strategy
@@ -113,14 +135,24 @@ public class GameLoop extends Canvas implements Runnable {
         }
 
         Graphics graphics = buffer.getDrawGraphics();
-
+        
         // Draw background
         graphics.setColor(Color.white);
         graphics.fillRect(0, 0, 1080, 1080);
-        manager.render(graphics);
+
+        this.manager.render(graphics);
+
+        // Draw health bar
+        graphics.setColor(Color.black);
+        graphics.fillRect(5, 5, 200, 32);
+        graphics.setColor(Color.green);
+        graphics.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);
+        graphics.setColor(Color.black);
+        graphics.drawRect(5, 5, 200, 32);
+        graphics.setColor(Color.black);
+        graphics.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
 
         graphics.dispose();
         buffer.show();
     }
-    
 }

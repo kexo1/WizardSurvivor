@@ -2,63 +2,60 @@ import java.util.LinkedList;
 import java.awt.Graphics;
 
 public class ObjManager {
-    
-    public LinkedList<GameObj> obj = new LinkedList<GameObj>();
+
+    // References
+    private LinkedList<GameObj> objList = new LinkedList<GameObj>();
+    private Object obj;
+    private Player player;
+
+    // Attributes
     private boolean up = false;
     private boolean down = false;
     private boolean left = false;
     private boolean right = false;
 
     public void tick() {
-        for (int i = 0; i < obj.size(); i++) {
-            GameObj tempObj = obj.get(i);
+        for (int i = 0; i < this.objList.size(); i++) {
+            GameObj tempObj = this.objList.get(i);
             tempObj.tick();
         }
     }
 
     public void render(Graphics graphics) {
-        // Get all objects
-        for (int i = 0; i < obj.size(); i++) {
-            GameObj tempObj = obj.get(i);
-            // Render the object
+        // Get all objListects
+        for (int i = 0; i < this.objList.size(); i++) {
+            GameObj tempObj = this.objList.get(i);
+            // Render the objListect
             tempObj.render(graphics);
         }
-
-    }
-
-    public Player getPlayer() {
-        for (int i = 0; i < obj.size(); i++) {
-            GameObj tempObj = obj.get(i);
-            if (tempObj.getId() == GameObjID.Player)
-                return (Player) tempObj;
-        }
-        return null;
     }
 
     public void addObj(GameObj tempObj) {
-        // Add an object
-        obj.add(tempObj);
+        this.objList.add(tempObj);
     }
 
     public void removeObj(GameObj tempObj) {
-        // Remove an object
-        obj.remove(tempObj);
+        this.objList.remove(tempObj);
     }
 
     public boolean isUp() {
-        return up;
+        return this.up;
     }
 
     public boolean isDown() {
-        return down;
+        return this.down;
     }
 
     public boolean isLeft() {
-        return left;
+        return this.left;
     }
 
     public boolean isRight() {
-        return right;
+        return this.right;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 
     public void setUp(boolean up) {
@@ -76,4 +73,21 @@ public class ObjManager {
     public void setRight(boolean right) {
         this.right = right;
     }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public LinkedList<GameObj> getObjList() {
+        return this.objList;
+    }
+
+    public Object getObj() {
+        return this.obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
+    }
+
 }

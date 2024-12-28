@@ -3,39 +3,46 @@ import java.awt.Rectangle;
 
 public abstract class GameObj {
 
-    protected int x, y;
-    protected float velX = 0, velY = 0;
-    protected GameObjID id;
+    // References
+    private GameObjID id;
     
-    public GameObj(int x, int y, GameObjID id, ObjManager manager) {
+    // Attributes
+    private int x;
+    private int y;
+    private float velX;
+    private float velY;
+
+    public GameObj(int x, int y, GameObjID id, ObjManager manager, SpriteSheet spriteSheet) {
         this.x = x;
         this.y = y;
         this.id = id;
     }
 
     public abstract void tick();
+
     public abstract void render(Graphics g);
+
     public abstract Rectangle getBounds();
 
     // Getters
     public GameObjID getId() {
-        return id;
+        return this.id;
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public float getVelX() {
-        return velX;
+        return this.velX;
     }
 
     public float getVelY() {
-        return velY;
+        return this.velY;
     }
 
     // Setters

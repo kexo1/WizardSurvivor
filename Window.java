@@ -19,7 +19,7 @@ public class Window {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         // Set the icon of the window
-        frame.setIconImage(new ImageIcon(Window.class.getResource("/images/wizard.png")).getImage());
+        frame.setIconImage(new ImageIcon(Window.class.getResource("/sprites/wizard.png")).getImage());
 
     }
 }
