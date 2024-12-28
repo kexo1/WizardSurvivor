@@ -1,3 +1,0 @@
-{
-    "java.checkstyle.configuration": "https://raw.githubusercontent.com/infjava/BlueJFRI/refs/heads/master/data/checkstyle/default_checks.xml"
-}
