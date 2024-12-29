@@ -29,20 +29,26 @@ public class GameLoop extends Canvas implements Runnable {
     private void init() {
         this.manager = new ObjManager();
 
-        SpriteSheet spriteSheet1 = new SpriteSheet("/sprites/wizard_spritesheet.png");
+        SpriteSheet spriteSheet1 = new SpriteSheet("/sprites/wizard-spritesheet.png");
         Player player = new Player(100, 100, GameObjID.Player, this.manager, spriteSheet1);
         this.manager.addObj(player);
         this.manager.setPlayer(player);
 
         SpriteSheet spriteSheet2 = new SpriteSheet("/sprites/heal.png");
-        this.manager.addObj(new Heal(200, 100, GameObjID.Supply, this.manager, spriteSheet2));
+        this.manager.addObj(new Heal(200, 100, GameObjID.Heal, this.manager, spriteSheet2));
 
         SpriteSheet spriteSheet3 = new SpriteSheet("/sprites/slime-spritesheet.png");
-        this.manager.addObj(new Enemy(300, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet3));
+        this.manager.addObj(new Slime(300, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet3));
+
+        SpriteSheet spriteSheet5 = new SpriteSheet("/sprites/ghoul-spritesheet.png");
+        this.manager.addObj(new Ghoul(500, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet5));
+
+        SpriteSheet spriteSheet6 = new SpriteSheet("/sprites/bee-spritesheet.png");
+        this.manager.addObj(new Bee(600, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet6));
 
         this.addKeyListener(new KeyInput(this.manager));
 
-        SpriteSheet spriteSheet4 = new SpriteSheet("/sprites/slime-spritesheet.png");
+        SpriteSheet spriteSheet4 = new SpriteSheet("/sprites/projectile.png");
         this.addMouseListener(new MouseInput(this.manager, spriteSheet4));
     }
 
@@ -54,10 +60,6 @@ public class GameLoop extends Canvas implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        /*
-        long timer = System.currentTimeMillis();
-        int frames = 0;
-        */
         long frameTime = 1000 / this.fpsLimit;
 
         while (this.isRunning) {

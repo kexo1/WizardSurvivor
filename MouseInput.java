@@ -1,10 +1,12 @@
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class MouseInput extends MouseAdapter {
 
     // References
     private ObjManager manager;
+    private BufferedImage sprite;
     private SpriteSheet spriteSheet;
 
     // Attributes
@@ -14,6 +16,7 @@ public class MouseInput extends MouseAdapter {
     public MouseInput(ObjManager manager, SpriteSheet spriteSheet) {
         this.manager = manager;
         this.spriteSheet = spriteSheet;
+        this.sprite = spriteSheet.getSprite(16, 16, 1, 1);
     }
 
     public void mousePressed(MouseEvent event) {
@@ -27,7 +30,7 @@ public class MouseInput extends MouseAdapter {
                 GameObj obj = this.manager.getObjList().get(i);
 
                 if (obj.getId() == GameObjID.Player) {
-                    this.manager.addObj(new Orb(obj.getX() + 16, obj.getY() + 24, GameObjID.Orb, this.manager, this.spriteSheet, mouseX, mouseY));
+                    this.manager.addObj(new Orb(obj.getX() + 16, obj.getY() + 24, GameObjID.Orb, this.manager, this.spriteSheet, this.sprite, mouseX, mouseY));
                 }
             }
             this.lastShotTime = currentTime;

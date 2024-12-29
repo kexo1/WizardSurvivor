@@ -15,16 +15,16 @@ public class Heal extends GameObj {
         super(x, y, gameObjID, manager, spriteSheet);
         this.x = x;
         this.y = y;
-        this.sprite = spriteSheet.getImage(43, 1, 1, 43, 43, 0);
+        this.sprite = spriteSheet.getSprite(43, 43, 1, 1);
     }
 
     public void tick() { }
 
     public void render(Graphics graphics) {
-        graphics.drawImage(this.sprite, this.x, this.y, 42, 42, null);
+        graphics.drawImage(this.sprite, this.x, this.y, 43, 43, null);
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(getX(), getY(), 42, 42);
+        return new Rectangle(this.x, this.y, 43, 43);
     }
 }

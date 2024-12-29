@@ -6,8 +6,8 @@ public class Player extends GameObj {
 
     // References
     private ObjManager manager;
-    private BufferedImage[] animIdle = new BufferedImage[2];
-    private BufferedImage[] animWalk = new BufferedImage[4];
+    private BufferedImage[] animIdle;
+    private BufferedImage[] animWalk;
     private SpriteAnimation spriteAnimationIdle;
     private SpriteAnimation spriteAnimationWalk;
 
@@ -26,14 +26,10 @@ public class Player extends GameObj {
         this.x = x;
         this.y = y;
 
-        this.animIdle[0] = spriteSheet.getImage(64, 1, 1, 32, 64, 0);
-        this.animIdle[1] = spriteSheet.getImage(64, 1, 1, 32, 64, 32);
+        this.animIdle = spriteSheet.getSpriteSheetRow(32, 64, 1, 2);
         this.spriteAnimationIdle = new SpriteAnimation(this.animIdle, this.x, this.y, 32, 64);
 
-        this.animWalk[0] = spriteSheet.getImage(64, 1, 2, 32, 64, 0);
-        this.animWalk[1] = spriteSheet.getImage(64, 1, 2, 32, 64, 32);
-        this.animWalk[2] = spriteSheet.getImage(64, 2, 2, 32, 64, 0);
-        this.animWalk[3] = spriteSheet.getImage(64, 2, 2, 32, 64, 32);
+        this.animWalk = spriteSheet.getSpriteSheetRow(32, 64, 2, 4);
         this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 64);
     }
 
@@ -90,10 +86,20 @@ public class Player extends GameObj {
     }
 
     private void collisionDetection() {
+        for (int i = 0; i < this.manager.getObjList().size(); i++) {
+            GameObj obj = this.manager.getObjList().get(i);
 
-        //for (GameObj obj : this.manager.getObjList()) {
-            // Nothing for now
-        //}
+            if (obj.getId() == GameObjID.Heal) {
+                if (this.getBounds().intersects(obj.getBounds())) {
+                        
+                    if (this.hp == 100) {
+                        return;
+                    }
+                    this.healPlayer();
+                    this.manager.removeObj(obj);
+                }
+            }
+        }
     }
 
     private void isOutOfBounds() {
@@ -118,6 +124,14 @@ public class Player extends GameObj {
             System.out.println("You died");
             //this.manager.removeObj(this);
         }
+    }
+
+    private void healPlayer() {
+        if (this.hp + 50 > 100) {
+            this.hp = 100;
+        } else {
+            this.hp += 50;
+        }  
     }
 
     public int getX() {

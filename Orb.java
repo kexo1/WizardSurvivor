@@ -1,25 +1,27 @@
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public class Orb extends GameObj {
     
     // References
     private ObjManager manager;
-    private long timer = System.currentTimeMillis();
+    private BufferedImage sprite;
 
     // Attributes
+    private long timer = System.currentTimeMillis();
     private int speed = 10;
     private float velX;
     private float velY;
     private int x;
     private int y;
 
-    public Orb(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet, int mouseX, int mouseY) {
+    public Orb(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet, BufferedImage sprite, int mouseX, int mouseY) {
         super(x, y, gameObjID, manager, spriteSheet);
         this.x = x;
         this.y = y;
         this.manager = manager;
+        this.sprite = sprite;
         this.normalizeDirection(mouseX, mouseY);
         
     }
@@ -30,8 +32,7 @@ public class Orb extends GameObj {
     }
     
     public void render(Graphics graphics) {
-        graphics.setColor(Color.orange);
-        graphics.fillOval(this.x, this.y, 12, 12);
+        graphics.drawImage(this.sprite, this.x, this.y, 16, 16, null);
     }
 
     public Rectangle getBounds() {

@@ -7,6 +7,7 @@ public class SpriteAnimation {
 
     // References
     private BufferedImage[] spriteList;
+    private AffineTransform transform;
 
     // Attributes
     private int index = 0;
@@ -18,13 +19,14 @@ public class SpriteAnimation {
     private int width;
     private int height;
 
-    public SpriteAnimation(BufferedImage[] sprites, int x, int y, int width, int height) {
-        this.spriteList = sprites;
+    public SpriteAnimation(BufferedImage[] spriteList, int x, int y, int width, int height) {
+        this.spriteList = spriteList;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.lastTime = System.currentTimeMillis();
+        this.transform = new AffineTransform();
     }
 
     public void animateSprite(Graphics graphics, boolean flip) {
@@ -39,15 +41,15 @@ public class SpriteAnimation {
                 this.index = 0;
             }
         }
-
-        Graphics2D g2d = (Graphics2D)graphics;
         BufferedImage image = this.spriteList[this.index];
-        
+        Graphics2D g2d = (Graphics2D)graphics;  
+
         if (flip) {
-            AffineTransform transform = new AffineTransform();
-            transform.translate(this.x + this.width, this.y);
-            transform.scale(-1, 1);
-            g2d.drawImage(image, transform, null);
+            this.transform.setToIdentity();                                                                         // Reset transform
+            this.transform.translate(this.x + this.width, this.y);                                                  // Move to the center of the image (Because it would be on right)
+            this.transform.scale(-1, 1);                                                                         // Flip the image on X axis
+            this.transform.scale((double)this.width / image.getWidth(), (double)this.height / image.getHeight());   // Scale the image to width and height
+            g2d.drawImage(image, this.transform, null);                                                         // Draw the image
         } else {
             g2d.drawImage(image, this.x, this.y, this.width, this.height, null);
         }

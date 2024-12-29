@@ -2,8 +2,7 @@
 public enum GameObjID {
     
     Player(),
-    Supply(),
-    Block(),
+    Heal(),
     Orb(),
     Enemy();
     
