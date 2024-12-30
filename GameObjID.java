@@ -4,6 +4,8 @@ public enum GameObjID {
     Player(),
     Heal(),
     Orb(),
-    Enemy();
-    
+    Sting(),
+    Enemy(),
+    Spawner();
+
 }

@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Bee extends GameObj {
 
@@ -9,14 +10,17 @@ public class Bee extends GameObj {
     private ObjManager manager;
     private BufferedImage[] animWalk;
     private BufferedImage[] animAttack;
+    private BufferedImage stingSprite;
+    private SpriteSheet spriteSheet;
     private SpriteAnimation spriteAnimationWalk;
     private SpriteAnimation spriteAnimationAttack;
+    private Random random = new Random();
+
     // Stats
     private int hp = 250;
-    private int damage = 40;
     private int speed = 4;
-    private int hitDelay = 1000;
-    private int hitDistance = 200;
+    private int hitDelay = 1500;
+    private int hitDistance = 250;
 
     // Movement
     private float velX;
@@ -33,16 +37,21 @@ public class Bee extends GameObj {
 
     public Bee(int x, int y, GameObjID gameObjID, ObjManager manager, Player player, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
+
         this.player = player;
         this.manager = manager;
+        this.spriteSheet = spriteSheet;
         this.x = x;
         this.y = y;
 
         this.animWalk = spriteSheet.getSpriteSheetRow(32, 32, 1, 4);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 48, 48);
+        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 64, 64);
 
         this.animAttack = spriteSheet.getSpriteSheetRow(26, 32, 3, 12);
-        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 39, 48);
+        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 52, 64);
+
+        spriteSheet = new SpriteSheet("/sprites/sting.png");
+        this.stingSprite = spriteSheet.getSprite(6, 3, 1, 1);
     }
 
     public void tick() {
@@ -79,32 +88,18 @@ public class Bee extends GameObj {
                     this.manager.removeObj(obj);
                 }
             }
-
-            if (obj.getId() == GameObjID.Player) {
-                if (this.getBounds().intersects(obj.getBounds())) {
-                    this.currentTime = System.currentTimeMillis();
-                    
-                    if (this.currentTime - this.lastShotTime < this.hitDelay) {
-                        return;
-                    }
-                    
-                    this.lastShotTime = this.currentTime;
-                    this.player.takeDamage(this.damage);
-                    
-                }
-            }
         }
     }
 
     public void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
-            System.out.println("Bee died");
+            this.player.setScore(this.player.getScore() + 30);
             this.manager.removeObj(this);
         }
     }
 
-    public void chasePlayer() {
+    private void chasePlayer() {
         int playerX = this.player.getX();
         int playerY = this.player.getY();
 
@@ -115,13 +110,32 @@ public class Bee extends GameObj {
         if (this.length > this.hitDistance) {
             double normalizedX = dx / this.length;
             double normalizedY = dy / this.length;
+            
+            double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+            double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
 
-            this.velX = (float)(normalizedX * this.speed);
-            this.velY = (float)(normalizedY * this.speed);
+            this.velX = (float)((normalizedX + randomFactorX) * this.speed);
+            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
+        // Bee can shoot sting while moving if player is atleast 200 pixels away
+        } else if (this.length > this.hitDistance - 50) {
+            this.shootSting();
+        // If stationary, bee will shoot sting
         } else {
             this.velX = 0;
             this.velY = 0;
+            this.shootSting();
         }
+    }
+
+    private void shootSting() {
+
+        this.currentTime = System.currentTimeMillis();
+        if (this.currentTime - this.lastShotTime < this.hitDelay) {
+            return;
+        }
+        this.lastShotTime = this.currentTime;
+
+        this.manager.addObj(new Sting(this.x + 10, this.y + 40, GameObjID.Sting, this.manager, this.spriteSheet, this.stingSprite, this.manager.getPlayer().getX(), this.manager.getPlayer().getY()));
     }
 
     private boolean shouldFlipImage() {
@@ -130,13 +144,5 @@ public class Bee extends GameObj {
         }
         this.lastVelX = this.velX;
         return this.lastVelX > 0;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 }

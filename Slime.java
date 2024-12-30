@@ -17,7 +17,7 @@ public class Slime extends GameObj {
     // Stats
     private int hp = 100;
     private int damage = 20;
-    private int speed = 2;
+    private int speed = 3;
     private int hitDelay = 1500;
     private int hitDistance = 20;
 
@@ -39,7 +39,7 @@ public class Slime extends GameObj {
         this.manager = manager;
         this.x = x;
         this.y = y;
-
+   
         int randomIndex = (this.random.nextInt(2) == 0) ? 1 : 3;
         this.animWalk = spriteSheet.getSpriteSheetRow(16, 16, randomIndex, 6);
         this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 32);
@@ -102,8 +102,9 @@ public class Slime extends GameObj {
     public void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
-            System.out.println("Slime died");
+            this.player.setScore(this.player.getScore() + 10);
             this.manager.removeObj(this);
+
         }
     }
 
@@ -114,13 +115,16 @@ public class Slime extends GameObj {
         double dx = playerX - this.x;
         double dy = playerY - this.y;
         this.length = Math.sqrt(dx * dx + dy * dy);
-        // If inside player lenght can be 0, which will cause error
+        // If inside player length can be 0, which will cause error
         if (this.length > this.hitDistance) {
             double normalizedX = dx / this.length;
             double normalizedY = dy / this.length;
 
-            this.velX = (float)(normalizedX * this.speed);
-            this.velY = (float)(normalizedY * this.speed);
+            double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+            double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+
+            this.velX = (float)((normalizedX + randomFactorX) * this.speed);
+            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
         } else {
             this.velX = 0;
             this.velY = 0;
@@ -133,13 +137,5 @@ public class Slime extends GameObj {
         }
         this.lastVelX = this.velX;
         return this.lastVelX < 0;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 }

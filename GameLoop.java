@@ -1,5 +1,7 @@
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 import java.awt.image.BufferStrategy;
 import java.awt.Color;
 
@@ -8,6 +10,8 @@ public class GameLoop extends Canvas implements Runnable {
     // References
     private ObjManager manager;
     private Thread thread;
+    private SpriteSheet spriteSheet;
+    private Spawner spawner;
 
     // Attributes
     private boolean isRunning = false;
@@ -29,27 +33,21 @@ public class GameLoop extends Canvas implements Runnable {
     private void init() {
         this.manager = new ObjManager();
 
-        SpriteSheet spriteSheet1 = new SpriteSheet("/sprites/wizard-spritesheet.png");
-        Player player = new Player(100, 100, GameObjID.Player, this.manager, spriteSheet1);
+        this.spriteSheet = new SpriteSheet("/sprites/wizard-spritesheet.png");
+        Player player = new Player(500, 800, GameObjID.Player, this.manager, this.spriteSheet);
+
         this.manager.addObj(player);
         this.manager.setPlayer(player);
 
-        SpriteSheet spriteSheet2 = new SpriteSheet("/sprites/heal.png");
-        this.manager.addObj(new Heal(200, 100, GameObjID.Heal, this.manager, spriteSheet2));
+        this.spawner = new Spawner(0, 0, GameObjID.Spawner, this.manager, null);
+        this.manager.addObj(this.spawner);
 
-        SpriteSheet spriteSheet3 = new SpriteSheet("/sprites/slime-spritesheet.png");
-        this.manager.addObj(new Slime(300, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet3));
+        this.addKeyListener(new KeyInput(this.manager, this.spawner));
 
-        SpriteSheet spriteSheet5 = new SpriteSheet("/sprites/ghoul-spritesheet.png");
-        this.manager.addObj(new Ghoul(500, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet5));
+        this.spriteSheet = new SpriteSheet("/sprites/projectile.png");
+        this.addMouseListener(new MouseInput(this.manager, this.spriteSheet, this.spawner));
 
-        SpriteSheet spriteSheet6 = new SpriteSheet("/sprites/bee-spritesheet.png");
-        this.manager.addObj(new Bee(600, 100, GameObjID.Enemy, this.manager, this.manager.getPlayer(), spriteSheet6));
-
-        this.addKeyListener(new KeyInput(this.manager));
-
-        SpriteSheet spriteSheet4 = new SpriteSheet("/sprites/projectile.png");
-        this.addMouseListener(new MouseInput(this.manager, spriteSheet4));
+        
     }
 
     // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
@@ -127,6 +125,7 @@ public class GameLoop extends Canvas implements Runnable {
         }
 
         Graphics graphics = buffer.getDrawGraphics();
+        Graphics2D g2d = (Graphics2D)graphics;
         
         // Draw background
         graphics.setColor(Color.white);
@@ -135,14 +134,29 @@ public class GameLoop extends Canvas implements Runnable {
         this.manager.render(graphics);
 
         // Draw health bar
-        graphics.setColor(Color.black);
-        graphics.fillRect(5, 5, 200, 32);
         graphics.setColor(Color.green);
         graphics.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);
-        graphics.setColor(Color.black);
-        graphics.drawRect(5, 5, 200, 32);
-        graphics.setColor(Color.black);
-        graphics.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
+        // Draw border
+        g2d.setColor(Color.black);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.drawRect(5, 5, this.manager.getPlayer().getMaxHp() * 2, 32);
+        // Draw stats
+        g2d.setFont(g2d.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
+        g2d.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
+        g2d.drawString("Damage: " + this.manager.getPlayer().getDamage(), 5, 70);
+        g2d.drawString("Speed: " + this.manager.getPlayer().getSpeed(), 5, 84);
+        g2d.drawString("Shoot Delay: " + this.manager.getPlayer().getShootDelay(), 5, 98);
+        // Draw wave
+        g2d.setFont(g2d.getFont().deriveFont(18f).deriveFont(java.awt.Font.BOLD));
+        g2d.drawString("Wave: " + this.spawner.getWave(), 500, 56);
+        // Draw score
+        g2d.setFont(g2d.getFont().deriveFont(13f).deriveFont(java.awt.Font.BOLD));
+        g2d.drawString("Score: " + this.manager.getPlayer().getScore(), 510, 70);
+        // Draw wave countdown
+        g2d.setFont(g2d.getFont().deriveFont(20f).deriveFont(java.awt.Font.BOLD));
+        if (this.spawner.getWaveState() == Spawner.WaveState.COUNTDOWN) {
+            g2d.drawString("Next wave in: " + this.spawner.getCounter(), 470, 110);
+        }
 
         graphics.dispose();
         buffer.show();

@@ -41,6 +41,7 @@ public class SpriteAnimation {
                 this.index = 0;
             }
         }
+        
         BufferedImage image = this.spriteList[this.index];
         Graphics2D g2d = (Graphics2D)graphics;  
 

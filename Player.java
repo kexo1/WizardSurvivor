@@ -13,7 +13,11 @@ public class Player extends GameObj {
 
     // Attributes
     private int hp = 100;
+    private int maxHp = 100;
     private int damage = 34;
+    private int speed = 5;
+    private int shootDelay = 200;
+    private int score = 0;
     private int velX;
     private int velY;
     private int x;
@@ -61,17 +65,17 @@ public class Player extends GameObj {
     private void movementVelocity() {
 
         if (this.manager.isUp()) {
-            this.velY = -5;
+            this.velY = -this.speed;
         } else if (this.manager.isDown()) {
-            this.velY = 5;
+            this.velY = this.speed;
         } else {
             this.velY = 0;
         }
 
         if (this.manager.isRight()) {
-            this.velX = 5;
+            this.velX = this.speed;
         } else if (this.manager.isLeft()) {
-            this.velX = -5;
+            this.velX = -this.speed;
         } else {
             this.velX = 0;
         }
@@ -92,10 +96,17 @@ public class Player extends GameObj {
             if (obj.getId() == GameObjID.Heal) {
                 if (this.getBounds().intersects(obj.getBounds())) {
                         
-                    if (this.hp == 100) {
+                    if (this.hp == this.maxHp) {
                         return;
                     }
                     this.healPlayer();
+                    this.manager.removeObj(obj);
+                }
+            }
+
+            if (obj.getId() == GameObjID.Sting) {
+                if (this.getBounds().intersects(obj.getBounds())) {
+                    this.takeDamage(30);
                     this.manager.removeObj(obj);
                 }
             }
@@ -126,9 +137,9 @@ public class Player extends GameObj {
         }
     }
 
-    private void healPlayer() {
-        if (this.hp + 50 > 100) {
-            this.hp = 100;
+    public void healPlayer() {
+        if (this.hp + 50 > this.maxHp) {
+            this.hp = this.maxHp;
         } else {
             this.hp += 50;
         }  
@@ -139,7 +150,7 @@ public class Player extends GameObj {
     }
 
     public int getY() {
-        return this.y;
+        return this.y + 30; // Offset for the sprite
     }
 
     public int getDamage() {
@@ -148,5 +159,41 @@ public class Player extends GameObj {
 
     public int getHp() {
         return this.hp;
+    }
+
+    public int getMaxHp() {
+        return this.maxHp;
+    }
+
+    public int getShootDelay() {
+        return this.shootDelay;
+    }
+
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void setShootDelay(int shootDelay) {
+        this.shootDelay = shootDelay;
+    }
+
+    public void setMaxHp(int hp) {
+        this.maxHp = hp;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

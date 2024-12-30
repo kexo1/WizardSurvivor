@@ -5,14 +5,21 @@ public class KeyInput extends KeyAdapter {
     
     // References
     private ObjManager manager;
+    private Spawner spawner;
 
-    public KeyInput(ObjManager manager) {
+    public KeyInput(ObjManager manager, Spawner spawner) {
         this.manager = manager;
+        this.spawner = spawner;
     }
 
     public void keyPressed(KeyEvent event) {
-        int key = event.getKeyCode();
         
+        if (this.spawner.getWaveState() == Spawner.WaveState.CHOOSING) {
+            return;
+        }
+
+        int key = event.getKeyCode();
+
         for (int i = 0; i < this.manager.getObjList().size(); i++) {
             GameObj obj = this.manager.getObjList().get(i);
 

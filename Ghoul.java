@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Ghoul extends GameObj {
 
@@ -11,6 +12,8 @@ public class Ghoul extends GameObj {
     private BufferedImage[] animAttack;
     private SpriteAnimation spriteAnimationWalk;
     private SpriteAnimation spriteAnimationAttack;
+    private Random random = new Random();
+
     // Stats
     private int hp = 250;
     private int damage = 40;
@@ -41,10 +44,10 @@ public class Ghoul extends GameObj {
         this.y = y;
 
         this.animWalk = spriteSheet.getSpriteSheetRow(32, 32, 2, 8);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 64, 64);
+        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 86, 86);
 
         this.animAttack = spriteSheet.getSpriteSheetRow(32, 32, 3, 6);
-        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 64, 64);
+        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 86, 86);
     }
 
     public void tick() {
@@ -66,7 +69,7 @@ public class Ghoul extends GameObj {
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(this.x, this.y, 64, 64);
+        return new Rectangle(this.x, this.y, 86, 86);
     }
 
     private void collisionDetection() {
@@ -101,7 +104,7 @@ public class Ghoul extends GameObj {
     public void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
-            System.out.println("Ghoul died");
+            this.player.setScore(this.player.getScore() + 50);
             this.manager.removeObj(this);
         }
     }
@@ -113,13 +116,16 @@ public class Ghoul extends GameObj {
         double dx = playerX - this.x;
         double dy = playerY - this.y;
         this.length = Math.sqrt(dx * dx + dy * dy);
-        // If inside player lenght can be 0, which will cause error
+        // If inside player length can be 0, which will cause error
         if (this.length > this.hitDistance) {
             double normalizedX = dx / this.length;
             double normalizedY = dy / this.length;
 
-            this.velX = (float)(normalizedX * this.speed);
-            this.velY = (float)(normalizedY * this.speed);
+            double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+            double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+
+            this.velX = (float)((normalizedX + randomFactorX) * this.speed);
+            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
         } else {
             this.velX = 0;
             this.velY = 0;
@@ -132,13 +138,5 @@ public class Ghoul extends GameObj {
         }
         this.lastVelX = this.velX;
         return this.lastVelX < 0;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 }
