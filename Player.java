@@ -1,6 +1,8 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class Player extends GameObj {
 
@@ -18,6 +20,8 @@ public class Player extends GameObj {
     private int speed = 5;
     private int shootDelay = 200;
     private int score = 0;
+    private int highScore;
+    
     private int velX;
     private int velY;
     private int x;
@@ -45,9 +49,14 @@ public class Player extends GameObj {
         this.movementVelocity();
         this.isOutOfBounds();
         this.shouldFlipImage();
+        this.updateHighScore();
     }
 
     public void render(Graphics graphics) {
+
+        if (this.hp <= 0) {
+            return;
+        }
 
         if (this.velX == 0 && this.velY == 0) {
             this.spriteAnimationIdle.setXY(this.x, this.y);
@@ -88,6 +97,24 @@ public class Player extends GameObj {
         this.lastVelX = this.velX;
         return this.lastVelX < 0;
     }
+
+    private void updateHighScore() {
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            this.saveHighScoreFile();
+        }
+    }
+
+    private void saveHighScoreFile() {
+        try (PrintWriter writer = new PrintWriter("highscore.txt")) {
+
+            writer.println(this.score);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void collisionDetection() {
         for (int i = 0; i < this.manager.getObjList().size(); i++) {
@@ -132,8 +159,7 @@ public class Player extends GameObj {
     public void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
-            System.out.println("You died");
-            //this.manager.removeObj(this);
+            System.out.println("You died!");
         }
     }
 
@@ -177,6 +203,10 @@ public class Player extends GameObj {
         return this.score;
     }
 
+    public int getHighScore() {
+        return this.highScore;
+    }
+
     public void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -195,5 +225,21 @@ public class Player extends GameObj {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

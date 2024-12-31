@@ -1,3 +1,4 @@
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.awt.Graphics;
 
@@ -22,10 +23,9 @@ public class ObjManager {
     }
 
     public void render(Graphics graphics) {
-        // Get all objListects
+        // Get all objects
         for (int i = 0; i < this.objList.size(); i++) {
             GameObj tempObj = this.objList.get(i);
-            // Render the objListect
             tempObj.render(graphics);
         }
     }
@@ -36,6 +36,17 @@ public class ObjManager {
 
     public void removeObj(GameObj tempObj) {
         this.objList.remove(tempObj);
+    }
+
+    public void clearEnemies() {
+        // Not mine
+        Iterator<GameObj> iterator = this.objList.iterator();
+        while (iterator.hasNext()) {
+            GameObj tempObj = iterator.next();
+            if (tempObj.getId() == GameObjID.Enemy || tempObj.getId() == GameObjID.Heal) {
+                iterator.remove();
+            }
+        }
     }
 
     public boolean isUp() {
@@ -84,10 +95,6 @@ public class ObjManager {
 
     public Object getObj() {
         return this.obj;
-    }
-
-    public void setObj(Object obj) {
-        this.obj = obj;
     }
 
 }

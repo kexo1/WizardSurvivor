@@ -87,7 +87,6 @@ public class Spawner extends GameObj {
                 }
             }
             
-            System.out.println("Spawning enemy");
             this.lastTimeSpawnEnemy = this.currentTime;
             
             int[] randomPosition = this.generateRandomPosition();
@@ -197,5 +196,17 @@ public class Spawner extends GameObj {
 
     public Abilities getAbilities() {
         return this.abilities;
+    }
+
+    public void setWave(int wave) {
+        this.wave = wave;
+    }
+
+    public void setWaveSize(int waveSize) {
+        this.waveSize = waveSize;
+    }
+
+    public void setWaveDiff(int waveDiff) {
+        this.waveDiff = waveDiff;
     }
 }

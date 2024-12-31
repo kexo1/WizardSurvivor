@@ -40,11 +40,12 @@ public class Abilities {
         for (int i = 1; i < this.abilities.length + 1; i++) {
             Graphics2D g2d = (Graphics2D)graphics;
             
-            graphics.setColor(Color.black);
+            graphics.setColor(Color.white);
             g2d.setFont(g2d.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
             g2d.drawString(this.abilities[i - 1], 100 + 150 * i, 630);
             g2d.drawString(this.abilitiesValues[i - 1], 140 + 150 * i, 650);
 
+            graphics.setColor(Color.black);
             graphics.drawImage(this.abilitiesSprites[i - 1], 100 + 150 * i, 500, 96, 96, null);
             g2d.setStroke(new BasicStroke(5));
             graphics.drawRect(100 + 150 * i - 8, 490, 116, 116);

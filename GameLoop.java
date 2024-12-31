@@ -4,14 +4,23 @@ import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.awt.image.BufferStrategy;
 import java.awt.Color;
-
+import java.awt.image.BufferedImage;
+import java.util.Random;
+import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 public class GameLoop extends Canvas implements Runnable {
     
     // References
     private ObjManager manager;
     private Thread thread;
-    private SpriteSheet spriteSheet;
+    private SpriteSheet spriteSheetOrb;
+    private SpriteSheet spriteSheetWizard;
+    private SpriteSheet spriteSheetBrick;
     private Spawner spawner;
+    private BufferedImage brickSprite;
+    private Random random = new Random();
 
     // Attributes
     private boolean isRunning = false;
@@ -22,32 +31,87 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     public GameLoop() {
-        // Create a new window
-        new Window(1080, 1080, this, "Wizard Survivor");
-        // Initialize objects and input
-        this.init();
-        // Start the game loop
-        this.start();
+        new Window(1080, 1080, this, "Wizard Survivor");    // Create a new window
+        this.init();                                                           // Initialize objects and input
+        this.start();                                                          // Start the game loop
     }
 
     private void init() {
         this.manager = new ObjManager();
 
-        this.spriteSheet = new SpriteSheet("/sprites/wizard-spritesheet.png");
-        Player player = new Player(500, 800, GameObjID.Player, this.manager, this.spriteSheet);
+        this.spriteSheetWizard = new SpriteSheet("/sprites/wizard-spritesheet.png");
+        this.spriteSheetBrick = new SpriteSheet("/sprites/textures.png");
+        this.spriteSheetOrb = new SpriteSheet("/sprites/projectile.png");
+
+        // Random between 0 and 14
+        int randomCol = this.random.nextInt(15);
+        int randomRow = this.random.nextInt(2) + 1;
+
+        this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
+
+        Player player = new Player(500, 800, GameObjID.Player, this.manager, this.spriteSheetWizard);
 
         this.manager.addObj(player);
         this.manager.setPlayer(player);
+        this.setHighScoreFile();
 
         this.spawner = new Spawner(0, 0, GameObjID.Spawner, this.manager, null);
         this.manager.addObj(this.spawner);
 
         this.addKeyListener(new KeyInput(this.manager, this.spawner));
+        this.addMouseListener(new MouseInput(this.manager, this.spriteSheetOrb, this.spawner, this));
 
-        this.spriteSheet = new SpriteSheet("/sprites/projectile.png");
-        this.addMouseListener(new MouseInput(this.manager, this.spriteSheet, this.spawner));
+    }
 
+    public void retry() {
+        // Random between 0 and 14
+        int randomCol = this.random.nextInt(15);
+        int randomRow = this.random.nextInt(2) + 1;
+        this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
+
+        this.manager.clearEnemies();
+
+        this.manager.getPlayer().setMaxHp(100);
+        this.manager.getPlayer().setHp(100);
+        this.manager.getPlayer().setScore(0);
+        this.manager.getPlayer().setDamage(34);
+        this.manager.getPlayer().setSpeed(5);
+        this.manager.getPlayer().setShootDelay(200);
+        this.manager.getPlayer().setX(500);
+        this.manager.getPlayer().setY(800);
+
+        this.spawner.setWave(1);
+        this.spawner.setWaveSize(5);
+        this.spawner.setWaveDiff(1);
+        this.spawner.setWaveState(Spawner.WaveState.CHOOSING);
+    }
+
+    private int setHighScoreFile() {
+        File file = new File("highscore.txt");
+
+        if (file.exists()) {
+            this.manager.getPlayer().setHighScore(this.readHighScoreFile());
+            
+        } else {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.println(0);
+                this.manager.getPlayer().setHighScore(0);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
         
+    }
+
+
+    private int readHighScoreFile() {
+        try (Scanner scanner = new Scanner(new File("highscore.txt"))) {
+            return scanner.nextInt();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
@@ -128,19 +192,41 @@ public class GameLoop extends Canvas implements Runnable {
         Graphics2D g2d = (Graphics2D)graphics;
         
         // Draw background
+
         graphics.setColor(Color.white);
         graphics.fillRect(0, 0, 1080, 1080);
 
+        // Draw brick ground (brickSprite) that has size 16x16 using drawImage
+        for (int i = 0; i < 1080; i += 32) {
+            for (int j = 0; j < 1080; j += 32) {
+                graphics.drawImage(this.brickSprite, i, j, 32, 32, null);
+            }
+        }
+        
+
         this.manager.render(graphics);
 
+        if (this.manager.getPlayer().getHp() <= 0) {
+            this.drawDeathMenu(graphics, g2d);    
+        } else {
+            this.drawHUD(graphics, g2d);
+        }
+
+        graphics.dispose();
+        buffer.show();
+    }
+
+    public void drawHUD(Graphics graphics, Graphics2D g2d) {
+
         // Draw health bar
-        graphics.setColor(Color.green);
-        graphics.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);
+        g2d.setColor(Color.green);
+        g2d.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);
         // Draw border
         g2d.setColor(Color.black);
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRect(5, 5, this.manager.getPlayer().getMaxHp() * 2, 32);
         // Draw stats
+        g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
         g2d.drawString("Damage: " + this.manager.getPlayer().getDamage(), 5, 70);
@@ -152,13 +238,25 @@ public class GameLoop extends Canvas implements Runnable {
         // Draw score
         g2d.setFont(g2d.getFont().deriveFont(13f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Score: " + this.manager.getPlayer().getScore(), 510, 70);
+        g2d.drawString("High Score: " + this.manager.getPlayer().getHighScore(), 495, 85);
         // Draw wave countdown
         g2d.setFont(g2d.getFont().deriveFont(20f).deriveFont(java.awt.Font.BOLD));
         if (this.spawner.getWaveState() == Spawner.WaveState.COUNTDOWN) {
             g2d.drawString("Next wave in: " + this.spawner.getCounter(), 470, 110);
         }
+    }
 
-        graphics.dispose();
-        buffer.show();
+    private void drawDeathMenu(Graphics graphics, Graphics2D g2d) {
+
+        graphics.setColor(Color.red);
+        g2d.setFont(g2d.getFont().deriveFont(50f).deriveFont(java.awt.Font.BOLD));
+        g2d.drawString("You died!", 420, 350);
+
+        graphics.setColor(Color.white);
+        g2d.setFont(g2d.getFont().deriveFont(40f).deriveFont(java.awt.Font.BOLD));
+        g2d.drawString("Retry", 480, 460);
+
+        g2d.setStroke(new BasicStroke(5));
+        graphics.drawRect(440, 410, 180, 70);
     }
 }
