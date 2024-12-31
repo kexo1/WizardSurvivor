@@ -104,7 +104,6 @@ public class GameLoop extends Canvas implements Runnable {
         
     }
 
-
     private int readHighScoreFile() {
         try (Scanner scanner = new Scanner(new File("highscore.txt"))) {
             return scanner.nextInt();
@@ -181,6 +180,7 @@ public class GameLoop extends Canvas implements Runnable {
 
     // Rendering: https://stackoverflow.com/questions/47377513/getting-graphics-object-to-draw-with-buffer-strategy
     public void render() {
+
         BufferStrategy buffer = this.getBufferStrategy();
         if (buffer == null) {
             // Preloads 3 frames
@@ -207,16 +207,16 @@ public class GameLoop extends Canvas implements Runnable {
         this.manager.render(graphics);
 
         if (this.manager.getPlayer().getHp() <= 0) {
-            this.drawDeathMenu(graphics, g2d);    
+            this.drawDeathMenu(g2d);    
         } else {
-            this.drawHUD(graphics, g2d);
+            this.drawHUD(g2d);
         }
 
         graphics.dispose();
         buffer.show();
     }
 
-    public void drawHUD(Graphics graphics, Graphics2D g2d) {
+    public void drawHUD(Graphics2D g2d) {
 
         // Draw health bar
         g2d.setColor(Color.green);
@@ -246,17 +246,17 @@ public class GameLoop extends Canvas implements Runnable {
         }
     }
 
-    private void drawDeathMenu(Graphics graphics, Graphics2D g2d) {
+    private void drawDeathMenu(Graphics2D g2d) {
 
-        graphics.setColor(Color.red);
+        g2d.setColor(Color.red);
         g2d.setFont(g2d.getFont().deriveFont(50f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("You died!", 420, 350);
 
-        graphics.setColor(Color.white);
+        g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(40f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Retry", 480, 460);
 
         g2d.setStroke(new BasicStroke(5));
-        graphics.drawRect(440, 410, 180, 70);
+        g2d.drawRect(440, 410, 180, 70);
     }
 }

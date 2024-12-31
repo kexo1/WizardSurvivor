@@ -15,10 +15,10 @@ public class Ghoul extends GameObj {
     private Random random = new Random();
 
     // Stats
-    private int hp = 250;
+    private int hp = 400;
     private int damage = 40;
     private int speed = 4;
-    private int hitDelay = 1000;
+    private int hitDelay = 800;
     private int hitDistance = 50;
 
     // Movement

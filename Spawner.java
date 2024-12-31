@@ -18,7 +18,7 @@ public class Spawner extends GameObj {
     private int waveSize = 5;
     private int waveDiff = 1;
     private int waveCountdown = 4;
-    private int waveSpawnDelay = 2;
+    private float waveSpawnDelay = 2;
     private float healSpawnDelay = 60;
 
     public enum WaveState {
@@ -134,6 +134,23 @@ public class Spawner extends GameObj {
 
         if (this.wave == 5 || this.wave == 10) {
             this.waveDiff++;
+            this.waveSpawnDelay -= 0.5;
+            this.healSpawnDelay -= 0.5;
+        }
+
+        if (this.wave > 10 && this.wave % 5 == 0) {
+
+            this.waveSpawnDelay -= 0.05;
+
+            if (this.waveSpawnDelay <= 0.5) {
+                this.waveSpawnDelay = 0.5f;
+            }
+            
+            this.healSpawnDelay -= 0.5;
+
+            if (this.waveSpawnDelay <= 15) {
+                this.waveSpawnDelay = 15;
+            }
         }
 
         this.waveState = WaveState.CHOOSING;

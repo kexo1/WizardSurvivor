@@ -20,6 +20,6 @@ public class Window {
         frame.setVisible(true);
         // Set the icon of the window
         frame.setIconImage(new ImageIcon(Window.class.getResource("/sprites/wizard.png")).getImage());
-
+        frame.setAlwaysOnTop(true);
     }
 }
