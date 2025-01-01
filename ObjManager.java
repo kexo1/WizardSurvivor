@@ -2,6 +2,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.awt.Graphics;
 
+/**
+ * Trieda ObjManager je zodpovedná za správu vsetkych objektov v hre.
+ * 
+ * Trieda obsahuje:
+ * - Referencie na objekty
+ * - Atribúty pohybu hráča
+ * - Metódy na pridanie a odstránenie objektov, nastavovanie pohybu hráča, získanie hráča
+ * 
+ * Metody tick a render slúžia na aktualizáciu a vykreslenie všetkých objektov.
+ */
 public class ObjManager {
 
     // References
@@ -15,6 +25,11 @@ public class ObjManager {
     private boolean left = false;
     private boolean right = false;
 
+    
+    /** 
+     * Metóda tick slúži na aktualizáciu všetkých objektov.
+     * Prejde všetky objekty v objList a zavolá metódu tick.
+     */
     public void tick() {
         for (int i = 0; i < this.objList.size(); i++) {
             GameObj tempObj = this.objList.get(i);
@@ -22,27 +37,44 @@ public class ObjManager {
         }
     }
 
+    /** 
+     * Metóda render slúži na vykreslenie všetkých objektov.
+     * Prejde všetky objekty v objList a zavolá metódu render.
+     * 
+     * @param graphics
+     */
     public void render(Graphics graphics) {
-        // Get all objects
         for (int i = 0; i < this.objList.size(); i++) {
             GameObj tempObj = this.objList.get(i);
             tempObj.render(graphics);
         }
     }
 
+    /** 
+     * Metóda addObj pridá objekt do objList.
+     * 
+     * @param tempObj
+     */
     public void addObj(GameObj tempObj) {
         this.objList.add(tempObj);
     }
 
+    /** 
+     * Metóda removeObj odstráni objekt z objList.
+     * 
+     * @param tempObj
+     */
     public void removeObj(GameObj tempObj) {
         this.objList.remove(tempObj);
     }
 
+    /** 
+     * Metóda clearEnemies odstráni všetky objekty s ID Enemy alebo Heal.
+     */
     public void clearEnemies() {
-        // Not mine
-        Iterator<GameObj> iterator = this.objList.iterator();
-        while (iterator.hasNext()) {
-            GameObj tempObj = iterator.next();
+        Iterator<GameObj> iterator = this.objList.iterator();                               // Pouzi iterator pre prechadzanie objektov, kedze normalne prechadzanie by mohlo preskocit nejake objekty
+        while (iterator.hasNext()) {                                                        // While loop pre prechadzanie objektov
+            GameObj tempObj = iterator.next();                                              // Ziskaj dalsi objekt
             if (tempObj.getId() == GameObjID.Enemy || tempObj.getId() == GameObjID.Heal) {
                 iterator.remove();
             }

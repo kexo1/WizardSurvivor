@@ -4,16 +4,22 @@ import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+
+/**
+ * Trieda Player zabezpecuje spravanie pohybu, kolizii a vlastnosti hraca.
+ * Hrac je objekt, ktory sa pohybuje na zaklade vstupu od hraca.
+ * Hrac moze strielat na nepriatelov, pohybovat sa, a zbierat heal objekty.
+ */
 public class Player extends GameObj {
 
-    // References
+    // Referencie
     private ObjManager manager;
     private BufferedImage[] animIdle;
     private BufferedImage[] animWalk;
     private SpriteAnimation spriteAnimationIdle;
     private SpriteAnimation spriteAnimationWalk;
 
-    // Attributes
+    // Statistiky
     private int hp = 100;
     private int maxHp = 100;
     private int damage = 34;
@@ -22,12 +28,22 @@ public class Player extends GameObj {
     private int score = 0;
     private int highScore;
     
+    // Pohyb
     private int velX;
     private int velY;
     private int x;
     private int y;
     private int lastVelX;
 
+    /**
+     * Konstruktor triedy Player.
+     * 
+     * @param x
+     * @param y
+     * @param id
+     * @param manager
+     * @param spriteSheet
+     */
     public Player(int x, int y, GameObjID id, ObjManager manager, SpriteSheet spriteSheet) {
         super(x, y, id, manager, spriteSheet);
         this.manager = manager;
@@ -41,10 +57,12 @@ public class Player extends GameObj {
         this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 64);
     }
 
+    /**
+     * Metoda tick aktualizuje poziciu hraca, detekuje kolizie, pohyb hraca,
+     * kontroluje ci hrac nevypadol z mapy, urci ci sa ma obrazok hraca otocit, a aktualizuje highscore.
+     */
     public void tick() {
-        this.x += this.velX;
-        this.y += this.velY;
-
+        this.updatePosition();
         this.collisionDetection();
         this.movementVelocity();
         this.isOutOfBounds();
@@ -52,6 +70,13 @@ public class Player extends GameObj {
         this.updateHighScore();
     }
 
+    /**
+     * Metoda render vykresli hraca na obrazovku..
+     * Jeho animacia zavisi od toho, ci sa pohybuje alebo stoji.
+     * Ak hrac nema ziadne hp (pocet zivotov), tak sa nevykresli.
+     * 
+     * @param graphics
+     */
     public void render(Graphics graphics) {
 
         if (this.hp <= 0) {
@@ -67,8 +92,18 @@ public class Player extends GameObj {
         }
     }
 
+    /**
+     * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
+     * 
+     * @return Rectangle
+     */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 32, 64);
+    }
+    
+    private void updatePosition() {
+        this.x += this.velX;
+        this.y += this.velY;
     }
 
     private void movementVelocity() {
@@ -115,8 +150,8 @@ public class Player extends GameObj {
         }
     }
 
-
     private void collisionDetection() {
+        
         for (int i = 0; i < this.manager.getObjList().size(); i++) {
             GameObj obj = this.manager.getObjList().get(i);
 
@@ -156,13 +191,19 @@ public class Player extends GameObj {
         }
     }
 
+    /**
+     * Metoda takeDamage znizuje pocet zivotov hraca.
+     * 
+     * @param damage
+     */
     public void takeDamage(int damage) {
         this.hp -= damage;
-        if (this.hp <= 0) {
-            System.out.println("You died!");
-        }
     }
 
+    /**
+     * Metoda healPlayer zvysuje pocet zivotov hraca.
+     * Ak by sa zvysil pocet zivotov nad maximalny pocet zivotov, tak sa nastavi maximalny pocet zivotov.
+     */
     public void healPlayer() {
         if (this.hp + 50 > this.maxHp) {
             this.hp = this.maxHp;
@@ -176,7 +217,7 @@ public class Player extends GameObj {
     }
 
     public int getY() {
-        return this.y + 30; // Offset for the sprite
+        return this.y + 30;     // 30 je offset, aby hracova pozicia bola v strede hraca
     }
 
     public int getDamage() {

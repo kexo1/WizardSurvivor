@@ -3,9 +3,14 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class Bee extends GameObj {
+/**
+ * Trieda Wasp zabezpecuje spravanie sa nepriatela Wasp (Osa).
+ * Wasp je objekt, ktory sa pohybuje smerom k hracovi a utoci na hraca strielanim pichadiel
+ * Wasp je stredne silny nepriatel v hre.
+ */
+public class Wasp extends GameObj {
 
-    // References
+    // Referencie
     private Player player;
     private ObjManager manager;
     private BufferedImage[] animWalk;
@@ -16,26 +21,35 @@ public class Bee extends GameObj {
     private SpriteAnimation spriteAnimationAttack;
     private Random random = new Random();
 
-    // Stats
+    // Statistiky
     private int hp = 250;
-    private int speed = 4;
-    private int hitDelay = 1500;
-    private int hitDistance = 250;
+    private final int speed = 4;
+    private final int hitDelay = 1500;
+    private final int hitDistance = 250;
 
-    // Movement
+    // Pohyb
     private float velX;
     private float velY;
     private int x;
     private int y;
+    private double length = 0;
 
-    // Time
+    // Casovac
     private long currentTime = System.currentTimeMillis();
     private long lastShotTime = 0;
-
-    private double length = 0;
     private float lastVelX;
 
-    public Bee(int x, int y, GameObjID gameObjID, ObjManager manager, Player player, SpriteSheet spriteSheet) {
+    /**
+     * Konstruktor triedy Wasp.
+     * 
+     * @param x
+     * @param y
+     * @param gameObjID
+     * @param manager
+     * @param player
+     * @param spriteSheet
+     */
+    public Wasp(int x, int y, GameObjID gameObjID, ObjManager manager, Player player, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
 
         this.player = player;
@@ -54,14 +68,21 @@ public class Bee extends GameObj {
         this.stingSprite = spriteSheet.getSprite(6, 3, 1, 1);
     }
 
+    /**
+     * Metoda tick aktualizuje poziciu objektu, detekuje kolizie a pohybuje sa smerom k hracovi.
+     */
     public void tick() {
-        this.x += this.velX;
-        this.y += this.velY;
-
+        this.updatePosition();
         this.collisionDetection();
         this.chasePlayer();
     }
 
+    /** 
+     * Metoda render zabezpecuje vykreslenie objektu Wasp pomocou animovania spritu.
+     * Jeho animacia zavisi od toho, ci sa pohybuje alebo utoci na hraca.
+     * 
+     * @param graphics
+     */
     public void render(Graphics graphics) {
         if (this.length > this.hitDistance) {
             this.spriteAnimationWalk.setXY(this.x, this.y);
@@ -71,7 +92,12 @@ public class Bee extends GameObj {
             this.spriteAnimationAttack.animateSprite(graphics, this.shouldFlipImage());
         }
     }
-
+    
+    /**
+     * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
+     * 
+     * @return Rectangle
+     */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 64, 64);
     }
@@ -83,15 +109,19 @@ public class Bee extends GameObj {
             if (obj.getId() == GameObjID.Orb) {
 
                 if (this.getBounds().intersects(obj.getBounds())) {
-                    this.takeDamage(this.player.getDamage());
-                    // Orb removes after hit
+                    this.takeDamage(this.player.getDamage()); // Odstranenie strely
                     this.manager.removeObj(obj);
                 }
             }
         }
     }
 
-    public void takeDamage(int damage) {
+    private void updatePosition() {
+        this.x += this.velX;
+        this.y += this.velY;
+    }
+
+    private void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
             this.player.setScore(this.player.getScore() + 30);
@@ -106,20 +136,20 @@ public class Bee extends GameObj {
         double dx = playerX - this.x;
         double dy = playerY - this.y;
         this.length = Math.sqrt(dx * dx + dy * dy);
-        // If inside player lenght can be 0, which will cause error
+
         if (this.length > this.hitDistance) {
             double normalizedX = dx / this.length;
             double normalizedY = dy / this.length;
             
-            double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
-            double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1; // Random value between -0.1 and 0.1
+            double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1;      // Nahodna hodnota medzi -0.1 a 0.1
+            double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1;
 
-            this.velX = (float)((normalizedX + randomFactorX) * this.speed);
+            this.velX = (float)((normalizedX + randomFactorX) * this.speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
             this.velY = (float)((normalizedY + randomFactorY) * this.speed);
-        // Bee can shoot sting while moving if player is atleast 200 pixels away
+        // Washp moze vystrelit pichadlo aj za pohybu ak je rozdiel medzi jeho a hracovou poziciou je medzi 200 a 250.
         } else if (this.length > this.hitDistance - 50) {
             this.shootSting();
-        // If stationary, bee will shoot sting
+        // Ak je Wasp v uplnom dosahu utoku, zastavi sa a zacne strielat pichadla.
         } else {
             this.velX = 0;
             this.velY = 0;
@@ -128,13 +158,13 @@ public class Bee extends GameObj {
     }
 
     private void shootSting() {
-
+        
         this.currentTime = System.currentTimeMillis();
         if (this.currentTime - this.lastShotTime < this.hitDelay) {
             return;
         }
         this.lastShotTime = this.currentTime;
-
+        // Vytvorenie pichadla a pridanie do objektov, podobne ako hracov Orb.
         this.manager.addObj(new Sting(this.x + 10, this.y + 40, GameObjID.Sting, this.manager, this.spriteSheet, this.stingSprite, this.manager.getPlayer().getX(), this.manager.getPlayer().getY()));
     }
 

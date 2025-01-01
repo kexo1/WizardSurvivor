@@ -4,15 +4,19 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
+/**
+ * Trieda Sting zabezpecuje spravanie sa vystreleneho objektu Sting.
+ * Sting je objekt, ktory sa pohybuje smerom k hracovi.
+ * Sting moze zasiahnut hraca a ubrat mu zivoty.
+ */
 public class Sting extends GameObj {
     
-    // References
+    // Referencie
     private ObjManager manager;
     private BufferedImage sprite;
 
-    // Attributes
-    private long timer = System.currentTimeMillis();
-    private int speed = 10;
+    // Pozcia
+    private final int speed = 10;
     private float velX;
     private float velY;
     private int x;
@@ -21,6 +25,21 @@ public class Sting extends GameObj {
     private int playerY;
     private double angle;
 
+    // Casovac
+    private long timer = System.currentTimeMillis();
+
+    /**
+     * Konstruktor triedy Sting.
+     * 
+     * @param x
+     * @param y
+     * @param gameObjID
+     * @param manager
+     * @param spriteSheet
+     * @param sprite
+     * @param playerX
+     * @param playerY
+     */
     public Sting(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet, BufferedImage sprite, int playerX, int playerY) {
         super(x, y, gameObjID, manager, spriteSheet);
         this.x = x;
@@ -29,26 +48,37 @@ public class Sting extends GameObj {
         this.playerY = playerY;
         this.manager = manager;
         this.sprite = sprite;
-        this.angle = Math.atan2(this.playerY - this.y, this.playerX - this.x);
+        this.angle = Math.atan2(this.playerY - this.y, this.playerX - this.x); // Vypocet uhla pomocou tangens
         this.normalizeDirection(playerX, playerY);
-        
     }
 
+    /**
+     * Metoda tick sluzi na aktualizaciu pozicie a casovaca objektu Sting.
+     */
     public void tick() {
         this.updatePosition();
         this.timer();
     }
     
+    /**
+     * Metoda render sluzi na vykreslenie objektu Sting.
+     * 
+     * @param graphics
+     */
     public void render(Graphics graphics) {
 
-        // Not mine!!
-        Graphics2D g2d = (Graphics2D)graphics;
-        AffineTransform old = g2d.getTransform();
-        g2d.rotate(this.angle, this.x + this.sprite.getWidth(null) / 2, this.y + this.sprite.getHeight(null) / 2);
+        Graphics2D g2d = (Graphics2D)graphics;                  // Pouztie Graphics2D pre rotaciu obrazka
+        AffineTransform old = g2d.getTransform();               // Ulozenie povodneho nastavenia, aby uhol neovplyvnil dalsie vykreslenie (Objekt by sa )
+        g2d.rotate(this.angle, this.x + 3, this.y + 1.5);       // Vykreslenie obrazka s otocenim, hodnoty su preto, aby sa otocil okolo stredu obrazka
         g2d.drawImage(this.sprite, this.x, this.y, 16, 8, null);
-        g2d.setTransform(old);
+        g2d.setTransform(old);                                  // Nastavenie povodneho nastavenia, iba X a Y suradnice, rotacia sa nezmeni
     }
 
+    /**
+     * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
+     * 
+     * @return Rectangle
+     */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 12, 12);
     }
@@ -64,17 +94,17 @@ public class Sting extends GameObj {
         }
     }
 
-    private void normalizeDirection(int mouseX, int mouseY) {
-        double dx = mouseX - this.x;
-        double dy = mouseY - this.y;
+    private void normalizeDirection(int playerX, int playerY) {
 
-        // Length of the vector
-        double length = Math.sqrt(dx * dx + dy * dy);
-        double normalizedX = dx / length;
-        double normalizedY = dy / length;
-        // Values between -1 and 1
-        this.velX = (float)(normalizedX * this.speed);
-        this.velY = (float)(normalizedY * this.speed);
+        double dx = playerX - this.x;    // Rozdiel medzi x-ovymi suradnicami aktualnej pozicie a pozicie hraca
+        double dy = playerY - this.y;    // Rozdiel medzi y-ovymi suradnicami aktualnej pozicie a pozicie hraca
+
+        double length = Math.sqrt(dx * dx + dy * dy);   // Vypocet na urcenie dlzky vektora (Pytagorova veta: https://tinyurl.com/vpk3ay6h)
+        double normalizedX = dx / length;               // Normalizovany smer x-ovej zlozky (hodnota medzi -1 a 1)
+        double normalizedY = dy / length;               // Normalizovany smer y-ovej zlozky (hodnota medzi -1 a 1)
+
+        this.velX = (float)(normalizedX * this.speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
+        this.velY = (float)(normalizedY * this.speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
     }
 
     public int getY() {

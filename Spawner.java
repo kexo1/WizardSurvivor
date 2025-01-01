@@ -1,10 +1,15 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
+/**
+ * Trieda Spawner zabezpecuje vytvaranie nepriatelov a heal-u na mape.
+ * Spawner ma moznost nahodne vyberat nepriatelov, ktori sa maju vytvorit.
+ * Spawner moze urcit pocet vln nepriatelov, ktore sa maju vytvorit a ich obtiaznost.
+ */
 public class Spawner extends GameObj {
 
-    // References
+    // Referencie
     private ObjManager manager;
     private Abilities abilities;
     private SpriteSheet spriteSheetHeal;
@@ -12,15 +17,16 @@ public class Spawner extends GameObj {
     private SpriteSheet spriteSheetGhoul;
     private SpriteSheet spriteSheetBee;
 
-    // Spawner attributes
-    private ArrayList<String> enemySpawnList = new ArrayList<String>();
+    // Atributy
+    private LinkedList<String> enemySpawnList = new LinkedList<String>();
     private int wave = 1;
     private int waveSize = 5;
     private int waveDiff = 1;
-    private int waveCountdown = 4;
+    private final int waveCountdown = 4;
     private float waveSpawnDelay = 2;
     private float healSpawnDelay = 60;
 
+    // Stavy vln
     public enum WaveState {
         SPAWNING,
         COUNTDOWN,
@@ -28,12 +34,21 @@ public class Spawner extends GameObj {
     }
     private WaveState waveState = WaveState.CHOOSING;
 
-    //Countdown attributes
+    // Casovanie jednotlivych udalosti
     private long lastTimeCountdown = System.currentTimeMillis();
     private long lastTimeSpawnEnemy = System.currentTimeMillis();
     private long lastTimeSpawnHeal = System.currentTimeMillis();
     private long currentTime = System.currentTimeMillis();
 
+    /**
+     * Konstruktor triedy Spawner.
+     * 
+     * @param x
+     * @param y
+     * @param gameObjID
+     * @param manager
+     * @param spriteSheet
+     */
     public Spawner(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
 
@@ -46,22 +61,34 @@ public class Spawner extends GameObj {
         this.spriteSheetBee = new SpriteSheet("/sprites/bee-spritesheet.png");
     }
 
+    /**
+     * Metoda tick zabezpecuje aktualizaciu casovacov a vytvaranie nepriatelov a heal-u.
+     */
     public void tick() {
         this.startCountdown();
         this.spawningEnemies();
         this.spawningHeal();
     }
 
+    /**
+     * Metoda render zabezpecuje vykreslenie abilit na obrazovku pocas vyberu.
+     * 
+     * @param graphics
+     */
     public void render(Graphics graphics) {
         if (this.waveState == WaveState.CHOOSING) {
             this.abilities.drawAbilities(graphics);
         }
     }
 
+    /**
+     * Metoda getBounds vrati nulovy obdlznik, kedze Spawner iba vytvara objekty.
+     * 
+     * @return Rectangle
+     */
     public Rectangle getBounds() {
         return new Rectangle(0, 0, 0, 0);
     }
-
 
     private void startCountdown() {
         this.currentTime = System.currentTimeMillis();
@@ -82,7 +109,7 @@ public class Spawner extends GameObj {
                 if (this.isEnemyAlive()) {
                     return;
                 } else {
-                    this.waveFinished();
+                    this.waveFinished(); // Ak su vsetci nepriatelia mrtvi, vlna je ukoncena
                     return;
                 }
             }
@@ -94,16 +121,17 @@ public class Spawner extends GameObj {
             String enemy = this.enemySpawnList.get(0);
             this.enemySpawnList.remove(0);
             
-            if ("slime".equals(enemy)) {
-                this.manager.addObj(new Slime(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetSlime));
-            } else if ("bee".equals(enemy)) {
-                this.manager.addObj(new Bee(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetBee));
-            } else if ("ghoul".equals(enemy)) {
-                this.manager.addObj(new Ghoul(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetGhoul));
+            switch (enemy) {
+                case "slime":
+                    this.manager.addObj(new Slime(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetSlime));
+                    break;
+                case "bee":
+                    this.manager.addObj(new Wasp(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetBee));
+                    break;
+                case "ghoul":
+                    this.manager.addObj(new Ghoul(randomPosition[0], randomPosition[1], GameObjID.Enemy, this.manager, this.manager.getPlayer(), this.spriteSheetGhoul));
+                    break;
             }
-
-            
-
         }
     }
 
@@ -112,8 +140,9 @@ public class Spawner extends GameObj {
 
         if (this.waveState != WaveState.CHOOSING && this.currentTime - this.lastTimeSpawnHeal >= this.healSpawnDelay * 1000) {
             this.lastTimeSpawnHeal = this.currentTime;
-            int x = 50 + (int)(Math.random() * ((900)));
-            int y = 50 + (int)(Math.random() * ((900)));
+
+            int x = 50 + (int)(Math.random() * ((900)));    // Nahodne cislo od 50 do 950
+            int y = 50 + (int)(Math.random() * ((900)));    // Nahodne cislo od 50 do 950
             System.out.println("Spawning heal at " + x + ", " + y);
             this.manager.addObj(new Heal(x, y, GameObjID.Heal, this.manager, this.spriteSheetHeal));
         }
@@ -132,12 +161,13 @@ public class Spawner extends GameObj {
         this.wave++;
         this.waveSize += 1;
 
+        // Ak hrac prejde 5 alebo 10 vln, tak sa obtiaznost zvysi o 1 a casovac na vytvaranie nepriatelov sa znizi o 0.5 sekundy.
         if (this.wave == 5 || this.wave == 10) {
             this.waveDiff++;
             this.waveSpawnDelay -= 0.5;
             this.healSpawnDelay -= 0.5;
         }
-
+        // Ak hrac prejde 10 vln, tak sa obtiaznost bude postupne zvysovat do nastavenych limitov.
         if (this.wave > 10 && this.wave % 5 == 0) {
 
             this.waveSpawnDelay -= 0.05;
@@ -160,7 +190,7 @@ public class Spawner extends GameObj {
         this.enemySpawnList.clear();
 
         for (int i = 0; i < this.waveSize; i++) {
-            int enemy = (int)(Math.random() * this.waveDiff);
+            int enemy = (int)(Math.random() * this.waveDiff);   // Nahodne cislo od 0 po waveDiff, napr. pri waveDiff = 2 mozu byt Slimovia a Osi.
 
             switch (enemy) {
                 case 0:
@@ -179,21 +209,26 @@ public class Spawner extends GameObj {
     private int[] generateRandomPosition() {
         int x;
         int y;
-        if (Math.random() < 0.5) {
-            x = -100 + (int)(Math.random() * 100);
+        if (Math.random() < 0.5) {                  // Nahodne cislo od 0 do 1
+            x = -100 + (int)(Math.random() * 100);  // Nahodne cislo od -100 do 0
         } else {
-            x = 1000 + (int)(Math.random() * 100);
+            x = 1000 + (int)(Math.random() * 100);  // Nahodne cislo od 1000 do 1100
         }
 
         if (Math.random() < 0.5) {
-            y = -100 + (int)(Math.random() * 100);
+            y = -100 + (int)(Math.random() * 100);  // Nahodne cislo od -100 do 0
         } else {
-            y = 1000 + (int)(Math.random() * 100);
+            y = 1000 + (int)(Math.random() * 100);  // Nahodne cislo od 1000 do 1100
         }
 
-        return new int[]{x, y};
+        return new int[]{x, y};                     // Pozicie mimo obrazovky
     }
 
+    /**  
+     * Metoda setWaveState nastavi stav vlny a nastavi casovac na aktualny cas.
+     * 
+     * @param waveState
+     */
     public void setWaveState(WaveState waveState) {
         this.lastTimeCountdown = System.currentTimeMillis();
         this.waveState = waveState;
@@ -203,6 +238,11 @@ public class Spawner extends GameObj {
         return this.wave;
     }
 
+    /**
+     * Metoda getCounter vrati zostavajuci cas do konca vlny.
+     * 
+     * @return int
+     */
     public int getCounter() {
         return ((int)(this.waveCountdown - (int)((this.currentTime - this.lastTimeCountdown) / 1000))) - 1;
     }

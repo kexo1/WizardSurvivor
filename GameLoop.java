@@ -10,67 +10,76 @@ import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+
+/**
+ * Trieda GameLoop je hlavnou triedou hry, ktora obsahuje herny loop, inicializaciu objektov a vykreslovanie.
+ * Trieda dedi od Canvas a implementuje Runnable.
+ */
 public class GameLoop extends Canvas implements Runnable {
     
-    // References
+    // Referencie
     private ObjManager manager;
     private Thread thread;
+    private Spawner spawner;
+    private BufferedImage brickSprite;
     private SpriteSheet spriteSheetOrb;
     private SpriteSheet spriteSheetWizard;
     private SpriteSheet spriteSheetBrick;
-    private Spawner spawner;
-    private BufferedImage brickSprite;
     private Random random = new Random();
 
-    // Attributes
+    // Atributy
     private boolean isRunning = false;
-    private int fpsLimit = 141;
+    private final int fpsLimit = 141;
 
-    public static void main(String[] args) {
+    
+    /**
+     * Metoda main sluzi na spustenie hry.
+     * Vytvori novy objekt GameLoop.
+     * 
+     * @param args
+     */
+    public static void main(String[] args ) {
         new GameLoop();
     }
 
+    /**
+     * Konstruktor triedy GameLoop vytvori novy objekt Window, inicializuje objekty a input a spusti herny loop.
+     */
     public GameLoop() {
-        new Window(1080, 1080, this, "Wizard Survivor");    // Create a new window
-        this.init();                                                           // Initialize objects and input
-        this.start();                                                          // Start the game loop
+        new Window(1080, 1080, this, "Wizard Survivor");    // Vytvori novy objekt Window
+        this.init();                                                           // Inicializuje objekty a vstup
+        this.start();                                                          // Zacne herny loop
     }
 
     private void init() {
+        // Vytvori novy objekt ObjManager
         this.manager = new ObjManager();
-
+        // Nacitaj sprite sheety
         this.spriteSheetWizard = new SpriteSheet("/sprites/wizard-spritesheet.png");
         this.spriteSheetBrick = new SpriteSheet("/sprites/textures.png");
         this.spriteSheetOrb = new SpriteSheet("/sprites/projectile.png");
-
-        // Random between 0 and 14
-        int randomCol = this.random.nextInt(15);
-        int randomRow = this.random.nextInt(2) + 1;
-
-        this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
-
+        this.randomGroundTexture();
+        // Vyrob hraca a pridaj ho do ObjManager
         Player player = new Player(500, 800, GameObjID.Player, this.manager, this.spriteSheetWizard);
-
         this.manager.addObj(player);
         this.manager.setPlayer(player);
+        // Nastav high score zo suboru
         this.setHighScoreFile();
-
+        // Vyrob spawner a pridaj ho do ObjManager
         this.spawner = new Spawner(0, 0, GameObjID.Spawner, this.manager, null);
         this.manager.addObj(this.spawner);
-
-        this.addKeyListener(new KeyInput(this.manager, this.spawner));
+        // Pridaj potrebny input na mys a klavesnicu
+        this.addKeyListener(new KeyInput(this.manager, this.spawner, this));
         this.addMouseListener(new MouseInput(this.manager, this.spriteSheetOrb, this.spawner, this));
-
     }
 
+    /**
+     * Metoda retry vymaze vsetkych nepriatelo a nastavi hracovi defaultne hodnoty.
+     */
     public void retry() {
-        // Random between 0 and 14
-        int randomCol = this.random.nextInt(15);
-        int randomRow = this.random.nextInt(2) + 1;
-        this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
 
         this.manager.clearEnemies();
-
+        // Nastav na originalne hodnoty
         this.manager.getPlayer().setMaxHp(100);
         this.manager.getPlayer().setHp(100);
         this.manager.getPlayer().setScore(0);
@@ -84,6 +93,15 @@ public class GameLoop extends Canvas implements Runnable {
         this.spawner.setWaveSize(5);
         this.spawner.setWaveDiff(1);
         this.spawner.setWaveState(Spawner.WaveState.CHOOSING);
+    }
+
+    /** 
+     * Metoda randomGroundTexture vyberie nahodnu texturu pre pozadie.
+     */
+    public void randomGroundTexture() {
+        int randomCol = this.random.nextInt(15);    // Random medzi 0 a 14
+        int randomRow = this.random.nextInt(2) + 1; // Random medzi 1 a 2
+        this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
     }
 
     private int setHighScoreFile() {
@@ -113,7 +131,14 @@ public class GameLoop extends Canvas implements Runnable {
         return 0;
     }
 
-    // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
+    /**
+     * Metoda run je hlavnym hernym loopom, ktory sa stara o spravne fungovanie hry.
+     * Metoda funguje na principe tick a render, ktore sa striedaju v nekonecnom cykle.
+     * Vypocet herneho loopu je zabezpeceny pomocou System.nanoTime() a Thread.sleep() ktore zabezpecuju spravne casovanie.
+     * Tento loop sa opakuje 60x za sekundu, pricom render sa vykresluje 141x za sekundu co zabezpecuje plynuly pohyb.
+     * Hlavnou inspiraciou pre tuto metodu bola diskusia na StackOverflow, a jeho tvorcom je Notch, ktory je byvali programator hry Minecraft.
+     * https://stackoverflow.com/questions/18283199/java-main-game-loop
+     */
     public void run() {
 
         this.requestFocus();
@@ -144,21 +169,28 @@ public class GameLoop extends Canvas implements Runnable {
         this.stop();
     }
 
-    // Starting: https://stackoverflow.com/questions/18283199/java-main-game-loop
+    /**
+     * Metoda start sluzi na spustenie herny loopu.
+     * Metoda kontroluje, ci uz herny loop bezi, ak ano, tak sa metoda ukonci.
+     * https://stackoverflow.com/questions/18283199/java-main-game-loop
+     */
     private void start() {
-        // Start the game loop
+
         if (this.isRunning) {
             return;
         }
         this.isRunning = true;
-        // Create a new thread and start it
-        this.thread = new Thread(this);
-        this.thread.start();
+        this.thread = new Thread(this);     // Vytvor novy thread (vlakno)
+        this.thread.start();                
     }
 
-    // Stopping thread: https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
+    /**
+     * Metoda stop sluzi na zastavenie herneho loopu.
+     * Metoda kontroluje, ci uz herny loop bezi, ak nie, tak sa metoda ukonci.
+     * https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
+     */ 
     private void stop() {
-        // Stop the game loop
+
         if (!this.isRunning) {
             return;
         }
@@ -166,80 +198,75 @@ public class GameLoop extends Canvas implements Runnable {
         this.isRunning = false;
 
         try {
-            // Wait for the thread to die
-            this.thread.join();
+            this.thread.join();             // Pockaj na ukoncenie threadu
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    // Game loop: https://stackoverflow.com/questions/18283199/java-main-game-loop
+    /**
+     * Metoda tick sluzi na aktualizaciu objektov v hre.
+     * Metoda vola tick() na objekte manager, ktory aktualizuje vsetky objekty v hre.
+     * https://stackoverflow.com/questions/18283199/java-main-game-loop
+     */
     public void tick() {
         this.manager.tick();
     }
 
-    // Rendering: https://stackoverflow.com/questions/47377513/getting-graphics-object-to-draw-with-buffer-strategy
     public void render() {
 
-        BufferStrategy buffer = this.getBufferStrategy();
+        BufferStrategy buffer = this.getBufferStrategy();  // Ziskaj buffer strategy
         if (buffer == null) {
-            // Preloads 3 frames
-            this.createBufferStrategy(3);
+            this.createBufferStrategy(3);       // Prednacitaj 3 snimky
             return;
         }
 
-        Graphics graphics = buffer.getDrawGraphics();
-        Graphics2D g2d = (Graphics2D)graphics;
-        
-        // Draw background
+        Graphics graphics = buffer.getDrawGraphics();      // Ziskaj graficky objekt z bufferu 
+        Graphics2D g2d = (Graphics2D)graphics;             // Ziskaj 2D graficky objekt ktory ma viacej moznosti na vykreslovanie (preferovane na vykreslovanie textu)
 
-        graphics.setColor(Color.white);
-        graphics.fillRect(0, 0, 1080, 1080);
-
-        // Draw brick ground (brickSprite) that has size 16x16 using drawImage
+        // Vykresli pozadie z brickSprite
         for (int i = 0; i < 1080; i += 32) {
             for (int j = 0; j < 1080; j += 32) {
                 graphics.drawImage(this.brickSprite, i, j, 32, 32, null);
             }
         }
         
-
         this.manager.render(graphics);
-
+        // Ak je hrac mrtvy, vykresli death menu, inak vykresli HUD
         if (this.manager.getPlayer().getHp() <= 0) {
             this.drawDeathMenu(g2d);    
         } else {
             this.drawHUD(g2d);
         }
 
-        graphics.dispose();
-        buffer.show();
+        graphics.dispose();       // Uvolni graficky objekt z pamate
+        buffer.show();            // Vyrenderuj graficky objekt na obrazovku
     }
 
-    public void drawHUD(Graphics2D g2d) {
+    private void drawHUD(Graphics2D g2d) {
 
-        // Draw health bar
+        // Vypln health bar zelene
         g2d.setColor(Color.green);
         g2d.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);
-        // Draw border
+        // Vykresli border okolo health baru
         g2d.setColor(Color.black);
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRect(5, 5, this.manager.getPlayer().getMaxHp() * 2, 32);
-        // Draw stats
+        // Vykrsli statistiky hraca
         g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
         g2d.drawString("Damage: " + this.manager.getPlayer().getDamage(), 5, 70);
         g2d.drawString("Speed: " + this.manager.getPlayer().getSpeed(), 5, 84);
         g2d.drawString("Shoot Delay: " + this.manager.getPlayer().getShootDelay(), 5, 98);
-        // Draw wave
+        // Vykresli kolo vlny (wave)
         g2d.setFont(g2d.getFont().deriveFont(18f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Wave: " + this.spawner.getWave(), 500, 56);
-        // Draw score
+        // Vykresli score a high score
         g2d.setFont(g2d.getFont().deriveFont(13f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Score: " + this.manager.getPlayer().getScore(), 510, 70);
         g2d.drawString("High Score: " + this.manager.getPlayer().getHighScore(), 495, 85);
-        // Draw wave countdown
+        // Vykresli odpocet k vlnam
         g2d.setFont(g2d.getFont().deriveFont(20f).deriveFont(java.awt.Font.BOLD));
         if (this.spawner.getWaveState() == Spawner.WaveState.COUNTDOWN) {
             g2d.drawString("Next wave in: " + this.spawner.getCounter(), 470, 110);
@@ -247,15 +274,15 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     private void drawDeathMenu(Graphics2D g2d) {
-
+        // Vykresli "You died!" text
         g2d.setColor(Color.red);
         g2d.setFont(g2d.getFont().deriveFont(50f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("You died!", 420, 350);
-
+        // Vykresli "Retry" text
         g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(40f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Retry", 480, 460);
-
+        // Vykresli obldznik okolo "Retry" textu
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRect(440, 410, 180, 70);
     }

@@ -3,22 +3,36 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 
+/**
+ * Trieda SpriteAnimation zabezpecuje animovanie obrazkov.
+ * Obrazky su plynule zobrazene na obrazovke a postupne vytvaraju animaciu.
+ */
 public class SpriteAnimation {
 
-    // References
+    // Referencie
     private BufferedImage[] spriteList;
     private AffineTransform transform;
 
-    // Attributes
+    // Animacia
     private int index = 0;
     private long lastTime = 0;
     private long timer = 0;
-    private int frameSpeed = 100;
+    private final int frameSpeed = 100;
+
+    // Pozicia a velkost obrazka
     private int x;
     private int y;
     private int width;
     private int height;
 
+    /**
+     * Konstruktor triedy SpriteAnimation.
+     * @param spriteList Pole obrazkov pre animaciu.
+     * @param x X-ova pozicia objektu.
+     * @param y Y-ova pozicia objektu.
+     * @param width Sirka obrazka.
+     * @param height Vyska obrazka.
+     */
     public SpriteAnimation(BufferedImage[] spriteList, int x, int y, int width, int height) {
         this.spriteList = spriteList;
         this.x = x;
@@ -29,28 +43,38 @@ public class SpriteAnimation {
         this.transform = new AffineTransform();
     }
 
+    /**
+     * Metoda animateSprite vykresli obrazok a animuje ho na obrazovke.
+     * Obrazok je vykresleny na pozicii x, y a je animovany pomocou indexovania obrazkov v poli.
+     * Animacia je obmedzena rychlostou frameSpeed.
+     * Funkcia animateSprite je volana v render metodach.
+     * 
+     * @param graphics Graficky kontext.
+     * @param flip True, ak ma byt obrazok otoceny.
+     */
     public void animateSprite(Graphics graphics, boolean flip) {
+
         long now = System.currentTimeMillis();
         this.timer += now - this.lastTime;
         this.lastTime = now;
 
-        if (this.timer > this.frameSpeed) {
-            this.index++;
-            this.timer = 0;
-            if (this.index >= this.spriteList.length) {
-                this.index = 0;
+        if (this.timer > this.frameSpeed) {                 // Ak casovac neprekrocil rychlost
+            this.index++;                                   // Posun na dalsi obrazok
+            this.timer = 0;                                 // Reset casovaca    
+            if (this.index >= this.spriteList.length) {     // Ak index prekrocil velkost pola
+                this.index = 0; 
             }
         }
         
-        BufferedImage image = this.spriteList[this.index];
+        BufferedImage image = this.spriteList[this.index];  // Vyber obrazok z pola
         Graphics2D g2d = (Graphics2D)graphics;  
 
-        if (flip) {
-            this.transform.setToIdentity();                                                                         // Reset transform
-            this.transform.translate(this.x + this.width, this.y);                                                  // Move to the center of the image (Because it would be on right)
-            this.transform.scale(-1, 1);                                                                         // Flip the image on X axis
-            this.transform.scale((double)this.width / image.getWidth(), (double)this.height / image.getHeight());   // Scale the image to width and height
-            g2d.drawImage(image, this.transform, null);                                                         // Draw the image
+        if (flip) {                                                                                                 // Ak ma byt obrazok otoceny
+            this.transform.setToIdentity();                                                                         // Reset transformacie, kedze sa pouziva pre kazdy obrazok
+            this.transform.translate(this.x + this.width, this.y);                                                  // Posun do stredu obrazka, aby sa otocil spravne
+            this.transform.scale(-1, 1);                                                                         // Otocenie obrazka podla osi x
+            this.transform.scale((double)this.width / image.getWidth(), (double)this.height / image.getHeight());   // Zmena velkosti obrazka
+            g2d.drawImage(image, this.transform, null);                                                         
         } else {
             g2d.drawImage(image, this.x, this.y, this.width, this.height, null);
         }

@@ -2,9 +2,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+/**
+ * Trieda MouseInput sluzi na spracovanie vstupu z mysi.
+ * Metoda mousePressed spracovava stlacenie tlacidla mysi.
+ * Metoda pickAbilities spracovava vyber vylepseni hraca.
+ * Metoda deathMenu spracovava stlacenie tlacidla mysi po smrti hraca.
+ * Metoda setDelay nastavuje oneskorenie medzi strelbou hraca.
+ */
 public class MouseInput extends MouseAdapter {
 
-    // References
+    // Referencie
     private ObjManager manager;
     private BufferedImage sprite;
     private SpriteSheet spriteSheet;
@@ -12,10 +19,18 @@ public class MouseInput extends MouseAdapter {
     private Abilities abilities;
     private GameLoop gameLoop;
 
-    // Attributes
+    // Atributy
     private long lastShotTime = 0;
     private int delay;
 
+    /**
+     * Konstruktor triedy MouseInput.
+     * 
+     * @param manager
+     * @param spriteSheet
+     * @param spawner
+     * @param gameLoop
+     */
     public MouseInput(ObjManager manager, SpriteSheet spriteSheet, Spawner spawner, GameLoop gameLoop) {
         this.manager = manager;
         this.spriteSheet = spriteSheet;
@@ -26,6 +41,14 @@ public class MouseInput extends MouseAdapter {
         this.abilities = spawner.getAbilities();
     }
 
+    /**
+     * Metoda mousePressed spracovava stlacenie tlacidla mysi.
+     * Metoda spracovava stlacenie tlacidla mysi, ked hrac zije alebo ked sa nachadza v stave vyberu vylepseni.
+     * Metoda vytvara novy Orb, ktory bude vytvoreny na pozicii hraca a bude letiet smerom k pozicii mysi.
+     * Metoda nastavuje cas poslednej strely.
+     * 
+     * @param event
+     */
     public void mousePressed(MouseEvent event) {
 
         int mouseX = event.getX();
@@ -41,9 +64,8 @@ public class MouseInput extends MouseAdapter {
             return;
         } 
 
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime - this.lastShotTime >= this.delay) {
+        long currentTime = System.currentTimeMillis();          // Ziskaj aktualny cas v milisekundach
+        if (currentTime - this.lastShotTime >= this.delay) {    // Ak ubehol cas od poslednej strely vacsi ako oneskorenie
             this.manager.addObj(new Orb(this.manager.getPlayer().getX() + 16, this.manager.getPlayer().getY() + 6, GameObjID.Orb, this.manager, this.spriteSheet, this.sprite, mouseX, mouseY));
             this.lastShotTime = currentTime;
         }
@@ -82,6 +104,11 @@ public class MouseInput extends MouseAdapter {
         }
     }
 
+    /**
+     * Metoda setDelay nastavuje oneskorenie medzi strelbou hraca.
+     * 
+     * @param delay
+     */
     public void setDelay(int delay) {
         this.delay = delay;
     }

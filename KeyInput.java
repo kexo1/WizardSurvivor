@@ -1,17 +1,40 @@
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Trieda KeyInput sluzi na spracovanie vstupu od klavesnice.
+ * Trieda obsahuje referencie na ObjManager a Spawner.
+ * Trieda obsahuje metody keyPressed a keyReleased, ktore spracovavaju stlacene a pustene klavesy.
+ * Metoda keyPressed spracovava stlacenie klavesu a keyReleased pustenie klavesu.
+ * Metoda keyPressed a keyReleased spracovava stlacene klavesy W, S, A, D a nastavuje smer hraca.
+ */
 public class KeyInput extends KeyAdapter {
     
-    // References
+    // Referencie
     private ObjManager manager;
     private Spawner spawner;
+    private GameLoop gameLoop;
 
-    public KeyInput(ObjManager manager, Spawner spawner) {
+    /**
+     * Konstruktor triedy KeyInput.
+     * 
+     * @param manager
+     * @param spawner
+     * @param gameLoop
+     */
+    public KeyInput(ObjManager manager, Spawner spawner, GameLoop gameLoop) {
         this.manager = manager;
         this.spawner = spawner;
+        this.gameLoop = gameLoop;
     }
 
+    /** 
+     * Metoda keyPressed spracovava stlacene klavesy.
+     * Metoda nastavuje smer hraca podla stlacenej klavesy a podla toho, ci hrac zije alebo ci sa nachadza v stave vyberu vylepseni.
+     * Tiez moze zmenit texturu pozadia stlacenim klavesy SPACE.
+     * 
+     * @param event
+     */
     public void keyPressed(KeyEvent event) {
         
         if (this.spawner.getWaveState() == Spawner.WaveState.CHOOSING) {
@@ -26,32 +49,41 @@ public class KeyInput extends KeyAdapter {
 
         if (key == KeyEvent.VK_W) {
             this.manager.setUp(true);
-        }
-        if (key == KeyEvent.VK_S) {
+
+        } else if (key == KeyEvent.VK_S) {
             this.manager.setDown(true);
-        }
-        if (key == KeyEvent.VK_A) {
+
+        } else if (key == KeyEvent.VK_A) {
             this.manager.setLeft(true);
-        }
-        if (key == KeyEvent.VK_D) {
+
+        } else if (key == KeyEvent.VK_D) {
             this.manager.setRight(true);
+
+        } else if (key == KeyEvent.VK_SPACE) {
+            this.gameLoop.randomGroundTexture();
         }
     }
 
+    /** 
+     * Metoda keyReleased spracovava pustene klavesy.
+     * Metoda nastavuje smer hraca podla pustenej klavesy.
+     * 
+     * @param event
+     */
     public void keyReleased(KeyEvent event) {
 
         int key = event.getKeyCode();
 
         if (key == KeyEvent.VK_W) {
             this.manager.setUp(false);
-        }
-        if (key == KeyEvent.VK_S) {
+
+        } else if (key == KeyEvent.VK_S) {
             this.manager.setDown(false);
-        }
-        if (key == KeyEvent.VK_A) {
+
+        } else if (key == KeyEvent.VK_A) {
             this.manager.setLeft(false);
-        }
-        if (key == KeyEvent.VK_D) {
+
+        } else if (key == KeyEvent.VK_D) {
             this.manager.setRight(false);
         }
     }
