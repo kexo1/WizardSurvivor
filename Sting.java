@@ -102,12 +102,4 @@ public class Sting extends GameObj {
         this.velX = (float)(normalizedX * speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
         this.velY = (float)(normalizedY * speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
     }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public int getX() {
-        return this.x;
-    }
 }
