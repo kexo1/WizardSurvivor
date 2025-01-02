@@ -12,12 +12,12 @@ import java.awt.image.BufferedImage;
 public class MouseInput extends MouseAdapter {
 
     // Referencie
-    private ObjManager manager;
-    private BufferedImage sprite;
-    private SpriteSheet spriteSheet;
-    private Spawner spawner;
-    private Abilities abilities;
-    private GameLoop gameLoop;
+    private final ObjManager manager;
+    private final BufferedImage sprite;
+    private final SpriteSheet spriteSheet;
+    private final Spawner spawner;
+    private final Abilities abilities;
+    private final GameLoop gameLoop;
 
     // Atributy
     private long lastShotTime = 0;
@@ -102,14 +102,5 @@ public class MouseInput extends MouseAdapter {
         if (mouseX >= 410 && mouseX <= 620 && mouseY >= 410 && mouseY <= 480) {
             this.gameLoop.retry();
         }
-    }
-
-    /**
-     * Metoda setDelay nastavuje oneskorenie medzi strelbou hraca.
-     * 
-     * @param delay oneskorenie medzi strelbou
-     */
-    public void setDelay(int delay) {
-        this.delay = delay;
     }
 }

@@ -11,19 +11,14 @@ import java.util.Random;
 public class Slime extends GameObj {
 
     // Referencie
-    private Player player;
-    private ObjManager manager;
-    private BufferedImage[] animWalk;
-    private BufferedImage[] animAttack;
-    private SpriteAnimation spriteAnimationAttack;
-    private SpriteAnimation spriteAnimationWalk;
-    private Random random = new Random();
+    private final Player player;
+    private final ObjManager manager;
+    private final SpriteAnimation spriteAnimationAttack;
+    private final SpriteAnimation spriteAnimationWalk;
+    private final Random random = new Random();
 
     // Statistiky
     private int hp = 100;
-    private final int damage = 20;
-    private final int speed = 3;
-    private final int hitDelay = 1500;
     private final int hitDistance = 20;
 
     // Pohyb
@@ -33,8 +28,6 @@ public class Slime extends GameObj {
     private int y;
     private double length = 0;
 
-    // Casovac
-    private long currentTime = System.currentTimeMillis();
     private long lastShotTime = 0;
     private float lastVelX;
 
@@ -56,11 +49,11 @@ public class Slime extends GameObj {
         this.y = y;
    
         int randomIndex = (this.random.nextInt(2) == 0) ? 1 : 3;    // Cerveny alebo zeleny slime
-        this.animWalk = spriteSheet.getSpriteSheetRow(16, 16, randomIndex, 6);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 32);
+        BufferedImage[] animWalk = spriteSheet.getSpriteSheetRow(16, 16, randomIndex, 6);
+        this.spriteAnimationWalk = new SpriteAnimation(animWalk, this.x, this.y, 32, 32);
 
-        this.animAttack = spriteSheet.getSpriteSheetRow(16, 16, randomIndex + 1, 5);
-        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 32, 32);
+        BufferedImage[] animAttack = spriteSheet.getSpriteSheetRow(16, 16, randomIndex + 1, 5);
+        this.spriteAnimationAttack = new SpriteAnimation(animAttack, this.x, this.y, 32, 32);
     }
 
     /**
@@ -112,14 +105,17 @@ public class Slime extends GameObj {
             if (obj.getId() == GameObjID.Player) {
 
                 if (this.getBounds().intersects(obj.getBounds())) {
-                    this.currentTime = System.currentTimeMillis();
-                    
-                    if (this.currentTime - this.lastShotTime < this.hitDelay) {
+                    // Casovac
+                    long currentTime = System.currentTimeMillis();
+
+                    int hitDelay = 1500;
+                    if (currentTime - this.lastShotTime < hitDelay) {
                         return;
                     }
                     
-                    this.lastShotTime = this.currentTime;
-                    this.player.takeDamage(this.damage);
+                    this.lastShotTime = currentTime;
+                    int damage = 20;
+                    this.player.takeDamage(damage);
                     
                 }
             }
@@ -127,8 +123,8 @@ public class Slime extends GameObj {
     }
 
     private void updatePosition() {
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += (int)this.velX;
+        this.y += (int)this.velY;
     }
 
     private void takeDamage(int damage) {
@@ -155,8 +151,9 @@ public class Slime extends GameObj {
             double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1;      // Nahodna hodnota medzi -0.1 a 0.1
             double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1;
 
-            this.velX = (float)((normalizedX + randomFactorX) * this.speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
-            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
+            int speed = 3;
+            this.velX = (float)((normalizedX + randomFactorX) * speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
+            this.velY = (float)((normalizedY + randomFactorY) * speed);
         } else {
             this.velX = 0;
             this.velY = 0;

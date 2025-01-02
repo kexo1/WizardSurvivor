@@ -11,19 +11,14 @@ import java.util.Random;
 public class Ghoul extends GameObj {
 
     // Referencie
-    private Player player;
-    private ObjManager manager;
-    private BufferedImage[] animWalk;
-    private BufferedImage[] animAttack;
-    private SpriteAnimation spriteAnimationWalk;
-    private SpriteAnimation spriteAnimationAttack;
-    private Random random = new Random();
+    private final Player player;
+    private final ObjManager manager;
+    private final SpriteAnimation spriteAnimationWalk;
+    private final SpriteAnimation spriteAnimationAttack;
+    private final Random random = new Random();
 
     // Statistiky
     private int hp = 400;
-    private final int damage = 40;
-    private final int speed = 4;
-    private final int hitDelay = 800;
     private final int hitDistance = 50;
 
     // Pohyb
@@ -33,8 +28,6 @@ public class Ghoul extends GameObj {
     private int y;
     private double length = 0;
 
-    // Casovac
-    private long currentTime = System.currentTimeMillis();
     private long lastShotTime = 0;
     private float lastVelX;
 
@@ -55,11 +48,11 @@ public class Ghoul extends GameObj {
         this.x = x;
         this.y = y;
 
-        this.animWalk = spriteSheet.getSpriteSheetRow(32, 32, 2, 8);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 86, 86);
+        BufferedImage[] animWalk = spriteSheet.getSpriteSheetRow(32, 32, 2, 8);
+        this.spriteAnimationWalk = new SpriteAnimation(animWalk, this.x, this.y, 86, 86);
 
-        this.animAttack = spriteSheet.getSpriteSheetRow(32, 32, 3, 6);
-        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 86, 86);
+        BufferedImage[] animAttack = spriteSheet.getSpriteSheetRow(32, 32, 3, 6);
+        this.spriteAnimationAttack = new SpriteAnimation(animAttack, this.x, this.y, 86, 86);
     }
     
     /**
@@ -74,7 +67,6 @@ public class Ghoul extends GameObj {
     /** 
      * Metoda render zabezpecuje vykreslenie objektu Ghoul pomocou animovania sprit-u
      * Jeho animacia zavisi od toho, ci sa pohybuje alebo utoci na hraca.
-     * 
      * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
@@ -111,14 +103,17 @@ public class Ghoul extends GameObj {
             if (obj.getId() == GameObjID.Player) {
 
                 if (this.getBounds().intersects(obj.getBounds())) {
-                    this.currentTime = System.currentTimeMillis();
-                    
-                    if (this.currentTime - this.lastShotTime < this.hitDelay) {
+                    // Casovac
+                    long currentTime = System.currentTimeMillis();
+
+                    int hitDelay = 800;
+                    if (currentTime - this.lastShotTime < hitDelay) {
                         return;
                     }
                     
-                    this.lastShotTime = this.currentTime;
-                    this.player.takeDamage(this.damage);
+                    this.lastShotTime = currentTime;
+                    int damage = 40;
+                    this.player.takeDamage(damage);
                     
                 }
             }
@@ -126,8 +121,8 @@ public class Ghoul extends GameObj {
     }
 
     private void updatePosition() {
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += (int)this.velX;
+        this.y += (int)this.velY;
     }
 
     private void takeDamage(int damage) {
@@ -153,8 +148,9 @@ public class Ghoul extends GameObj {
             double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1;      // Nahodna hodnota medzi -0.1 a 0.1
             double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1;
 
-            this.velX = (float)((normalizedX + randomFactorX) * this.speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
-            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
+            int speed = 4;
+            this.velX = (float)((normalizedX + randomFactorX) * speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
+            this.velY = (float)((normalizedY + randomFactorY) * speed);
         } else {
             this.velX = 0;
             this.velY = 0;

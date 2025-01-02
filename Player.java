@@ -13,11 +13,9 @@ import java.io.PrintWriter;
 public class Player extends GameObj {
 
     // Referencie
-    private ObjManager manager;
-    private BufferedImage[] animIdle;
-    private BufferedImage[] animWalk;
-    private SpriteAnimation spriteAnimationIdle;
-    private SpriteAnimation spriteAnimationWalk;
+    private final ObjManager manager;
+    private final SpriteAnimation spriteAnimationIdle;
+    private final SpriteAnimation spriteAnimationWalk;
 
     // Statistiky
     private int hp = 100;
@@ -50,11 +48,11 @@ public class Player extends GameObj {
         this.x = x;
         this.y = y;
 
-        this.animIdle = spriteSheet.getSpriteSheetRow(32, 64, 1, 2);
-        this.spriteAnimationIdle = new SpriteAnimation(this.animIdle, this.x, this.y, 32, 64);
+        BufferedImage[] animIdle = spriteSheet.getSpriteSheetRow(32, 64, 1, 2);
+        this.spriteAnimationIdle = new SpriteAnimation(animIdle, this.x, this.y, 32, 64);
 
-        this.animWalk = spriteSheet.getSpriteSheetRow(32, 64, 2, 4);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 32, 64);
+        BufferedImage[] animWalk = spriteSheet.getSpriteSheetRow(32, 64, 2, 4);
+        this.spriteAnimationWalk = new SpriteAnimation(animWalk, this.x, this.y, 32, 64);
     }
 
     /**

@@ -9,11 +9,11 @@ import java.awt.image.BufferedImage;
 public class Heal extends GameObj {
 
     // Referencie
-    private BufferedImage sprite;
+    private final BufferedImage sprite;
 
     // Atributy
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     /**
      * Konstruktor triedy Heal.

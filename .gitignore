@@ -3,3 +3,6 @@
 .vscode/
 highscore.txt
 package.bluej
+/.idea
+*.iml
+/out/production

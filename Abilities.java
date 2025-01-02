@@ -11,17 +11,17 @@ import java.awt.BasicStroke;
 public class Abilities {
     
     // Referencie
-    private Player player;
+    private final Player player;
 
     // Atributy
-    private BufferedImage[] abilitiesSprites;
-    private String[] abilities = {
+    private final BufferedImage[] abilitiesSprites;
+    private final String[] abilities = {
         "     Increase HP",
         " Increase Damage",
         "  Increase Speed",
         "Decrease Shoot Delay"
     };
-    private String[] abilitiesValues = {
+    private final String[] abilitiesValues = {
         "+ 10",
         "+ 5",
         "+ 1",

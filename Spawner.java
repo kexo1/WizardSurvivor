@@ -10,15 +10,15 @@ import java.util.LinkedList;
 public class Spawner extends GameObj {
 
     // Referencie
-    private ObjManager manager;
-    private Abilities abilities;
-    private SpriteSheet spriteSheetHeal;
-    private SpriteSheet spriteSheetSlime;
-    private SpriteSheet spriteSheetGhoul;
-    private SpriteSheet spriteSheetBee;
+    private final ObjManager manager;
+    private final Abilities abilities;
+    private final SpriteSheet spriteSheetHeal;
+    private final SpriteSheet spriteSheetSlime;
+    private final SpriteSheet spriteSheetGhoul;
+    private final SpriteSheet spriteSheetBee;
 
     // Atributy
-    private LinkedList<String> enemySpawnList = new LinkedList<String>();
+    private final LinkedList<String> enemySpawnList = new LinkedList<>();
     private int wave = 1;
     private int waveSize = 5;
     private int waveDiff = 1;
@@ -26,10 +26,21 @@ public class Spawner extends GameObj {
     private float waveSpawnDelay = 2;
     private float healSpawnDelay = 60;
 
-    // Stavy vln
+    /**
+     * Enum WaveState sluzi na identifikaciu stavu vlny.
+     */
     public enum WaveState {
+        /**
+         * stav, v ktorom sa nepriatelia vytvaraju
+         */
         SPAWNING,
+        /**
+         * stav, v ktorom sa caka na zaciatok vlny
+         */
         COUNTDOWN,
+        /**
+         * stav, v ktorom hrac vybera schopnosti
+         */
         CHOOSING
     }
     private WaveState waveState = WaveState.CHOOSING;
@@ -164,19 +175,19 @@ public class Spawner extends GameObj {
         // Ak hrac prejde 5 alebo 10 vln, tak sa obtiaznost zvysi o 1 a casovac na vytvaranie nepriatelov sa znizi o 0.5 sekundy.
         if (this.wave == 5 || this.wave == 10) {
             this.waveDiff++;
-            this.waveSpawnDelay -= 0.5;
-            this.healSpawnDelay -= 0.5;
+            this.waveSpawnDelay -= 0.5F;
+            this.healSpawnDelay -= 0.5F;
         }
         // Ak hrac prejde 10 vln, tak sa obtiaznost bude postupne zvysovat do nastavenych limitov.
         if (this.wave > 10 && this.wave % 5 == 0) {
 
-            this.waveSpawnDelay -= 0.05;
+            this.waveSpawnDelay -= 0.05F;
 
             if (this.waveSpawnDelay <= 0.5) {
                 this.waveSpawnDelay = 0.5f;
             }
             
-            this.healSpawnDelay -= 0.5;
+            this.healSpawnDelay -= 0.5F;
 
             if (this.waveSpawnDelay <= 15) {
                 this.waveSpawnDelay = 15;
@@ -244,7 +255,7 @@ public class Spawner extends GameObj {
      * @return zostavajuci cas do konca vlny
      */
     public int getCounter() {
-        return ((int)(this.waveCountdown - (int)((this.currentTime - this.lastTimeCountdown) / 1000))) - 1;
+        return this.waveCountdown - (int)((this.currentTime - this.lastTimeCountdown) / 1000) - 1;
     }
 
     public WaveState getWaveState() {

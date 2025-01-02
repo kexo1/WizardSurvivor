@@ -11,20 +11,16 @@ import java.util.Random;
 public class Wasp extends GameObj {
 
     // Referencie
-    private Player player;
-    private ObjManager manager;
-    private BufferedImage[] animWalk;
-    private BufferedImage[] animAttack;
-    private BufferedImage stingSprite;
-    private SpriteSheet spriteSheet;
-    private SpriteAnimation spriteAnimationWalk;
-    private SpriteAnimation spriteAnimationAttack;
-    private Random random = new Random();
+    private final Player player;
+    private final ObjManager manager;
+    private final BufferedImage stingSprite;
+    private final SpriteSheet spriteSheet;
+    private final SpriteAnimation spriteAnimationWalk;
+    private final SpriteAnimation spriteAnimationAttack;
+    private final Random random = new Random();
 
     // Statistiky
     private int hp = 250;
-    private final int speed = 4;
-    private final int hitDelay = 1500;
     private final int hitDistance = 250;
 
     // Pohyb
@@ -34,8 +30,6 @@ public class Wasp extends GameObj {
     private int y;
     private double length = 0;
 
-    // Casovac
-    private long currentTime = System.currentTimeMillis();
     private long lastShotTime = 0;
     private float lastVelX;
 
@@ -58,11 +52,11 @@ public class Wasp extends GameObj {
         this.x = x;
         this.y = y;
 
-        this.animWalk = spriteSheet.getSpriteSheetRow(32, 32, 1, 4);
-        this.spriteAnimationWalk = new SpriteAnimation(this.animWalk, this.x, this.y, 64, 64);
+        BufferedImage[] animWalk = spriteSheet.getSpriteSheetRow(32, 32, 1, 4);
+        this.spriteAnimationWalk = new SpriteAnimation(animWalk, this.x, this.y, 64, 64);
 
-        this.animAttack = spriteSheet.getSpriteSheetRow(26, 32, 3, 12);
-        this.spriteAnimationAttack = new SpriteAnimation(this.animAttack, this.x, this.y, 52, 64);
+        BufferedImage[] animAttack = spriteSheet.getSpriteSheetRow(26, 32, 3, 12);
+        this.spriteAnimationAttack = new SpriteAnimation(animAttack, this.x, this.y, 52, 64);
 
         spriteSheet = new SpriteSheet("/sprites/sting.png");
         this.stingSprite = spriteSheet.getSprite(6, 3, 1, 1);
@@ -117,8 +111,8 @@ public class Wasp extends GameObj {
     }
 
     private void updatePosition() {
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += (int)this.velX;
+        this.y += (int)this.velY;
     }
 
     private void takeDamage(int damage) {
@@ -144,8 +138,9 @@ public class Wasp extends GameObj {
             double randomFactorX = (this.random.nextDouble() - 0.5) * 0.1;      // Nahodna hodnota medzi -0.1 a 0.1
             double randomFactorY = (this.random.nextDouble() - 0.5) * 0.1;
 
-            this.velX = (float)((normalizedX + randomFactorX) * this.speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
-            this.velY = (float)((normalizedY + randomFactorY) * this.speed);
+            int speed = 4;
+            this.velX = (float)((normalizedX + randomFactorX) * speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
+            this.velY = (float)((normalizedY + randomFactorY) * speed);
         // Wasp moze vystrelit pichadlo aj za pohybu ak je rozdiel medzi jeho a hracovou poziciou je medzi 200 a 250.
         } else if (this.length > this.hitDistance - 50) {
             this.shootSting();
@@ -158,12 +153,14 @@ public class Wasp extends GameObj {
     }
 
     private void shootSting() {
-        
-        this.currentTime = System.currentTimeMillis();
-        if (this.currentTime - this.lastShotTime < this.hitDelay) {
+
+        // Casovac
+        long currentTime = System.currentTimeMillis();
+        int hitDelay = 1500;
+        if (currentTime - this.lastShotTime < hitDelay) {
             return;
         }
-        this.lastShotTime = this.currentTime;
+        this.lastShotTime = currentTime;
         // Vytvorenie pichadla a pridanie do objektov, podobne ako hracov Orb.
         this.manager.addObj(new Sting(this.x + 10, this.y + 40, GameObjID.Sting, this.manager, this.spriteSheet, this.stingSprite, this.manager.getPlayer().getX(), this.manager.getPlayer().getY()));
     }

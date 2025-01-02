@@ -1,5 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 
 /**
@@ -9,7 +10,6 @@ public class SpriteSheet {
 
     // Atributy
     private BufferedImage spriteSheet;
-    private BufferedImage[] spriteSheetRow;
 
     /**
      * Konstruktor triedy SpriteSheet.
@@ -18,7 +18,7 @@ public class SpriteSheet {
      */
     public SpriteSheet(String path) {
         try {
-            this.spriteSheet = ImageIO.read(getClass().getResource(path));
+            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResource(path))); // Nacitanie obrazku, tak aby to nenavrajalo NullPointerException
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,12 +47,12 @@ public class SpriteSheet {
      * @return array BufferedImage[] obsahujuci jednotlive casti obrazkov pouzitelne v animacii.
      */
     public BufferedImage[] getSpriteSheetRow(int imgSizeX, int imgSizeY, int row, int numberOfSprites) {
-        this.spriteSheetRow = new BufferedImage[numberOfSprites];
+        BufferedImage[] spriteSheetRow = new BufferedImage[numberOfSprites];
 
         for (int i = 0; i < numberOfSprites; i++) {
-            this.spriteSheetRow[i] = this.spriteSheet.getSubimage(((i + 1) * (imgSizeX)) - imgSizeX, (row * imgSizeY) - imgSizeY, imgSizeX, imgSizeY);
+            spriteSheetRow[i] = this.spriteSheet.getSubimage(((i + 1) * (imgSizeX)) - imgSizeX, (row * imgSizeY) - imgSizeY, imgSizeX, imgSizeY);
         }
-        return this.spriteSheetRow;
+        return spriteSheetRow;
     }
 
 }

@@ -1,5 +1,6 @@
 import javax.swing.JFrame;
 import java.awt.Dimension;
+import java.util.Objects;
 import javax.swing.ImageIcon;
 
 /**
@@ -20,11 +21,11 @@ public class Window {
         frame.setMaximumSize(new Dimension(width, height));
         frame.setMinimumSize(new Dimension(width, height));
         frame.add(game);                                        // Pridaj objekt GameLoop do okna
-        frame.setResizable(false);                    // Nastav okno na nerozsirovane
+        frame.setResizable(false);                              // Nastav okno na nerozsirovane
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   // Nastav operaciu pri zatvoreni okna
-        frame.setLocationRelativeTo(null);                    // Nastav polohu okna na stred obrazovky
+        frame.setLocationRelativeTo(null);                      // Nastav polohu okna na stred obrazovky
         frame.setVisible(true);                             
-        frame.setIconImage(new ImageIcon(Window.class.getResource("/sprites/wizard.png")).getImage());  // Nastav ikonu okna
+        frame.setIconImage(new ImageIcon(Objects.requireNonNull(Window.class.getResource("/sprites/wizard.png"))).getImage());  // Nastav ikonu okna, tak aby nenavracala null
         frame.setAlwaysOnTop(true);                                                              // Nastav okno na vrch
     }
 }

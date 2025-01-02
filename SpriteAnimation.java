@@ -10,20 +10,19 @@ import java.awt.geom.AffineTransform;
 public class SpriteAnimation {
 
     // Referencie
-    private BufferedImage[] spriteList;
-    private AffineTransform transform;
+    private final BufferedImage[] spriteList;
+    private final AffineTransform transform;
 
     // Animacia
     private int index = 0;
-    private long lastTime = 0;
+    private long lastTime;
     private long timer = 0;
-    private final int frameSpeed = 100;
 
     // Pozicia a velkost obrazka
     private int x;
     private int y;
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     /**
      * Konstruktor triedy SpriteAnimation.
@@ -59,7 +58,8 @@ public class SpriteAnimation {
         this.timer += now - this.lastTime;
         this.lastTime = now;
 
-        if (this.timer > this.frameSpeed) {                 // Ak casovac neprekrocil rychlost
+        int frameSpeed = 100;
+        if (this.timer > frameSpeed) {                 // Ak casovac neprekrocil rychlost
             this.index++;                                   // Posun na dalsi obrazok
             this.timer = 0;                                 // Reset casovaca    
             if (this.index >= this.spriteList.length) {     // Ak index prekrocil velkost pola

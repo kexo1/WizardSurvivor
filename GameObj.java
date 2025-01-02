@@ -10,7 +10,7 @@ import java.awt.Rectangle;
 public abstract class GameObj {
 
     // References
-    private GameObjID id;
+    private final GameObjID id;
 
     /**
      * Konstruktor triedy GameObj vytvori novy objekt s ID, ktore je definovane v enum GameObjID.

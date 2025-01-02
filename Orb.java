@@ -10,12 +10,11 @@ import java.awt.image.BufferedImage;
 public class Orb extends GameObj {
     
     // Referencie
-    private ObjManager manager;
-    private BufferedImage sprite;
+    private final ObjManager manager;
+    private final BufferedImage sprite;
 
     // Atributy
-    private long timer = System.currentTimeMillis();
-    private final int speed = 10;
+    private final long timer = System.currentTimeMillis();
     private float velX;
     private float velY;
     private int x;
@@ -69,8 +68,8 @@ public class Orb extends GameObj {
     }
 
     private void updatePosition() {
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += (int)this.velX;
+        this.y += (int)this.velY;
     }
 
     private void timer() {
@@ -88,8 +87,9 @@ public class Orb extends GameObj {
         double normalizedX = dx / length;               // Normalizovany smer x-ovej zlozky (hodnota medzi -1 a 1)
         double normalizedY = dy / length;               // Normalizovany smer y-ovej zlozky (hodnota medzi -1 a 1)
 
-        this.velX = (float)(normalizedX * this.speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
-        this.velY = (float)(normalizedY * this.speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
+        int speed = 10;
+        this.velX = (float)(normalizedX * speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
+        this.velY = (float)(normalizedY * speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
     }
 
     public int getY() {

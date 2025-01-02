@@ -11,9 +11,9 @@ import java.awt.event.KeyEvent;
 public class KeyInput extends KeyAdapter {
     
     // Referencie
-    private ObjManager manager;
-    private Spawner spawner;
-    private GameLoop gameLoop;
+    private final ObjManager manager;
+    private final Spawner spawner;
+    private final GameLoop gameLoop;
 
     /**
      * Konstruktor triedy KeyInput.
@@ -87,5 +87,4 @@ public class KeyInput extends KeyAdapter {
             this.manager.setRight(false);
         }
     }
-    
 }

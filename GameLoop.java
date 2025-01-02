@@ -22,20 +22,15 @@ public class GameLoop extends Canvas implements Runnable {
     private Thread thread;
     private Spawner spawner;
     private BufferedImage brickSprite;
-    private SpriteSheet spriteSheetOrb;
-    private SpriteSheet spriteSheetWizard;
     private SpriteSheet spriteSheetBrick;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     // Atributy
     private boolean isRunning = false;
-    private final int fpsLimit = 141;
 
-    
     /**
      * Metoda main sluzi na spustenie hry.
      * Vytvori novy objekt GameLoop.
-     * 
      * @param args argumenty pri spusteni hry (nie su potrebne)
      */
     public static void main(String[] args ) {
@@ -46,21 +41,21 @@ public class GameLoop extends Canvas implements Runnable {
      * Konstruktor triedy GameLoop vytvori novy objekt Window, inicializuje objekty a input a spusti herny loop.
      */
     public GameLoop() {
-        new Window(1080, 1080, this, "Wizard Survivor");    // Vytvori novy objekt Window
-        this.init();                                                           // Inicializuje objekty a vstup
-        this.start();                                                          // Zacne herny loop
+        new Window(1080, 1080, this, "Wizard Survivor");        // Vytvori novy objekt Window
+        this.init();                                                               // Inicializuje objekty a vstup
+        this.start();                                                              // Zacne herny loop
     }
 
     private void init() {
         // Vytvori novy objekt ObjManager
         this.manager = new ObjManager();
         // Nacitaj sprite sheet pre hraca, textury a projektil
-        this.spriteSheetWizard = new SpriteSheet("/sprites/wizard-spritesheet.png");
+        SpriteSheet spriteSheetWizard = new SpriteSheet("/sprites/wizard-spritesheet.png");
         this.spriteSheetBrick = new SpriteSheet("/sprites/textures.png");
-        this.spriteSheetOrb = new SpriteSheet("/sprites/projectile.png");
+        SpriteSheet spriteSheetOrb = new SpriteSheet("/sprites/projectile.png");
         this.randomGroundTexture();
         // Vyrob hraca a pridaj ho do ObjManager
-        Player player = new Player(500, 800, GameObjID.Player, this.manager, this.spriteSheetWizard);
+        Player player = new Player(500, 800, GameObjID.Player, this.manager, spriteSheetWizard);
         this.manager.addObj(player);
         this.manager.setPlayer(player);
         // Nastav high score zo suboru
@@ -70,7 +65,7 @@ public class GameLoop extends Canvas implements Runnable {
         this.manager.addObj(this.spawner);
         // Pridaj potrebny input na mys a klavesnicu
         this.addKeyListener(new KeyInput(this.manager, this.spawner, this));
-        this.addMouseListener(new MouseInput(this.manager, this.spriteSheetOrb, this.spawner, this));
+        this.addMouseListener(new MouseInput(this.manager, spriteSheetOrb, this.spawner, this));
     }
 
     /**
@@ -97,14 +92,16 @@ public class GameLoop extends Canvas implements Runnable {
 
     /** 
      * Metoda randomGroundTexture vyberie nahodnu texturu pre pozadie.
+     * Metoda vybera texturu zo spriteSheetu, ktora je nahodne vybrana z 16 stlpcov a 2 riadkov.
      */
     public void randomGroundTexture() {
-        int randomCol = this.random.nextInt(15);    // Random medzi 0 a 14
+
+        int randomCol = this.random.nextInt(16) + 1;    // Random medzi 1 a 16
         int randomRow = this.random.nextInt(2) + 1; // Random medzi 1 a 2
         this.brickSprite = this.spriteSheetBrick.getSprite(16, 16, randomCol, randomRow);
     }
 
-    private int setHighScoreFile() {
+    private void setHighScoreFile() {
         File file = new File("highscore.txt");
 
         if (file.exists()) {
@@ -118,8 +115,6 @@ public class GameLoop extends Canvas implements Runnable {
                 e.printStackTrace();
             }
         }
-        return 0;
-        
     }
 
     private int readHighScoreFile() {
@@ -132,12 +127,13 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
+     * Zdroj: https://stackoverflow.com/questions/18283199/java-main-game-loop
      * Metoda run je hlavnym hernym cyklom, ktory sa stara o spravne fungovanie hry.
      * Metoda funguje na principe tick a render, ktore sa striedaju v nekonecnom cykle.
      * Vypocet herneho cyklu je zabezpeceny pomocou System.nanoTime() a Thread.sleep() ktore zabezpecuju spravne casovanie.
      * Tento loop sa opakuje 60x za sekundu, pricom render sa vykresluje 141x za sekundu co zabezpecuje plynuly pohyb.
      * Hlavnou inspiraciou pre tuto metodu bola diskusia na StackOverflow, a jeho tvorcom je Notch, ktory je byvali programator hry Minecraft.
-     * https://stackoverflow.com/questions/18283199/java-main-game-loop
+     * @author Notch
      */
     public void run() {
 
@@ -146,7 +142,8 @@ public class GameLoop extends Canvas implements Runnable {
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        long frameTime = 1000 / this.fpsLimit;
+        int fpsLimit = 141;
+        long frameTime = 1000 / fpsLimit;
 
         while (this.isRunning) {
             long now = System.nanoTime();
@@ -170,9 +167,10 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
+     * Zdroj: https://stackoverflow.com/questions/18283199/java-main-game-loop
      * Metoda start sluzi na spustenie herneho cyklu.
      * Metoda kontroluje, ci uz herny loop bezi, ak ano, tak sa metoda ukonci.
-     * https://stackoverflow.com/questions/18283199/java-main-game-loop
+     * @author Notch
      */
     private void start() {
 
@@ -185,9 +183,9 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
+     * Zdroj: https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
      * Metoda stop sluzi na zastavenie herneho cyklu.
      * Metoda kontroluje, ci uz herny loop bezi, ak nie, tak sa metoda ukonci.
-     * https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
      */ 
     private void stop() {
 
@@ -207,12 +205,16 @@ public class GameLoop extends Canvas implements Runnable {
     /**
      * Metoda tick sluzi na aktualizaciu objektov v hre.
      * Metoda vola tick() na objekte manager, ktory aktualizuje vsetky objekty v hre.
-     * https://stackoverflow.com/questions/18283199/java-main-game-loop
      */
     public void tick() {
         this.manager.tick();
     }
 
+    /**
+     * Metoda render sluzi na vykreslenie objektov na obrazovku.
+     * Buffering je metoda, ktora zabezpecuje, ze sa vykresli cela snimka naraz, aby sa predoslo artefaktom.
+     * Metoda vykresluje pozadie, objekty a HUD.
+     */
     public void render() {
 
         BufferStrategy buffer = this.getBufferStrategy();  // Ziskaj buffer strategy
@@ -244,7 +246,6 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     private void drawHUD(Graphics2D g2d) {
-
         // Vypln health bar zelene
         g2d.setColor(Color.green);
         g2d.fillRect(5, 5, this.manager.getPlayer().getHp() * 2, 32);

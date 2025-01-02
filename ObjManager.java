@@ -4,19 +4,16 @@ import java.awt.Graphics;
 
 /**
  * Trieda ObjManager je zodpovedná za správu vsetkych objektov v hre.
- * 
  * Trieda obsahuje:
  * - Referencie na objekty
  * - Atribúty pohybu hráča
  * - Metódy na pridanie a odstránenie objektov, nastavovanie pohybu hráča, získanie hráča
- * 
  * Metody tick a render slúžia na aktualizáciu a vykreslenie všetkých objektov.
  */
 public class ObjManager {
 
     // References
-    private LinkedList<GameObj> objList = new LinkedList<GameObj>();
-    private Object obj;
+    private final LinkedList<GameObj> objList = new LinkedList<>();
     private Player player;
 
     // Attributes
@@ -25,7 +22,11 @@ public class ObjManager {
     private boolean left = false;
     private boolean right = false;
 
-    
+    /**
+     * Konstruktor triedy ObjManager.
+     */
+    public ObjManager() { }
+
     /** 
      * Metoda tick sluzi na aktualizaciu vsetkych objektov.
      * Prejde vsetky objekty v objList a zavola metodu tick.
@@ -123,10 +124,6 @@ public class ObjManager {
 
     public LinkedList<GameObj> getObjList() {
         return this.objList;
-    }
-
-    public Object getObj() {
-        return this.obj;
     }
 
 }

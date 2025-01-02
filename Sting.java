@@ -12,21 +12,17 @@ import java.awt.geom.AffineTransform;
 public class Sting extends GameObj {
     
     // Referencie
-    private ObjManager manager;
-    private BufferedImage sprite;
+    private final ObjManager manager;
+    private final BufferedImage sprite;
 
-    // Pozicia
-    private final int speed = 10;
     private float velX;
     private float velY;
     private int x;
     private int y;
-    private int playerX;
-    private int playerY;
-    private double angle;
+    private final double angle;
 
     // Casovac
-    private long timer = System.currentTimeMillis();
+    private final long timer = System.currentTimeMillis();
 
     /**
      * Konstruktor triedy Sting.
@@ -44,11 +40,9 @@ public class Sting extends GameObj {
         super(x, y, gameObjID, manager, spriteSheet);
         this.x = x;
         this.y = y;
-        this.playerX = playerX;
-        this.playerY = playerY;
         this.manager = manager;
         this.sprite = sprite;
-        this.angle = Math.atan2(this.playerY - this.y, this.playerX - this.x); // Vypocet uhla pomocou tangens
+        this.angle = Math.atan2(playerY - this.y, playerX - this.x); // Vypocet uhla pomocou tangens
         this.normalizeDirection(playerX, playerY);
     }
 
@@ -84,8 +78,8 @@ public class Sting extends GameObj {
     }
 
     private void updatePosition() {
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += (int)this.velX;
+        this.y += (int)this.velY;
     }
 
     private void timer() {
@@ -103,8 +97,10 @@ public class Sting extends GameObj {
         double normalizedX = dx / length;               // Normalizovany smer x-ovej zlozky (hodnota medzi -1 a 1)
         double normalizedY = dy / length;               // Normalizovany smer y-ovej zlozky (hodnota medzi -1 a 1)
 
-        this.velX = (float)(normalizedX * this.speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
-        this.velY = (float)(normalizedY * this.speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
+        // Pozicia
+        int speed = 10;
+        this.velX = (float)(normalizedX * speed);  // Nastavenie rychlosti pohybu v x-ovej zlozke
+        this.velY = (float)(normalizedY * speed);  // Nastavenie rychlosti pohybu v y-ovej zlozke
     }
 
     public int getY() {
