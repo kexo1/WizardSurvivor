@@ -42,12 +42,12 @@ public class Wasp extends GameObj {
     /**
      * Konstruktor triedy Wasp.
      * 
-     * @param x
-     * @param y
-     * @param gameObjID
-     * @param manager
-     * @param player
-     * @param spriteSheet
+     * @param x x-ova suradnica objektu
+     * @param y y-ova suradnica objektu
+     * @param gameObjID identifikator objektu
+     * @param manager objekt manazera
+     * @param player objekt hraca
+     * @param spriteSheet spriteSheet, ktory obsahuje sprity pre animaciu
      */
     public Wasp(int x, int y, GameObjID gameObjID, ObjManager manager, Player player, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
@@ -69,7 +69,7 @@ public class Wasp extends GameObj {
     }
 
     /**
-     * Metoda tick aktualizuje poziciu objektu, detekuje kolizie a pohybuje sa smerom k hracovi.
+     * Metoda tick aktualizuje poziciu objektu, deteguje kolizie a pohybuje sa smerom k hracovi.
      */
     public void tick() {
         this.updatePosition();
@@ -81,7 +81,7 @@ public class Wasp extends GameObj {
      * Metoda render zabezpecuje vykreslenie objektu Wasp pomocou animovania spritu.
      * Jeho animacia zavisi od toho, ci sa pohybuje alebo utoci na hraca.
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
         if (this.length > this.hitDistance) {
@@ -146,7 +146,7 @@ public class Wasp extends GameObj {
 
             this.velX = (float)((normalizedX + randomFactorX) * this.speed);    // Priradenie nahodneho faktora k rychlosti pohybu, aby sa nepriatelia nespajali.
             this.velY = (float)((normalizedY + randomFactorY) * this.speed);
-        // Washp moze vystrelit pichadlo aj za pohybu ak je rozdiel medzi jeho a hracovou poziciou je medzi 200 a 250.
+        // Wasp moze vystrelit pichadlo aj za pohybu ak je rozdiel medzi jeho a hracovou poziciou je medzi 200 a 250.
         } else if (this.length > this.hitDistance - 50) {
             this.shootSting();
         // Ak je Wasp v uplnom dosahu utoku, zastavi sa a zacne strielat pichadla.

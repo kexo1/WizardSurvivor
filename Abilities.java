@@ -46,7 +46,7 @@ public class Abilities {
 
     /**
      * Metoda drawAbilities vykresli schopnosti hraca na obrazovku.
-     * Schoptnosti su: Zvysenie zivotov, Zvysenie sily, Zvysenie rychlosti, Zvysenie rychlosti strelby.
+     * Schopnosti su: Zvysenie zivotov, Zvysenie sily, Zvysenie rychlosti, Zvysenie rychlosti strelby.
      * 
      * @param graphics Graficky kontext.
      */
@@ -70,8 +70,6 @@ public class Abilities {
 
     /**
      * Metoda increaseHp zvysi zivoty hraca o 10.
-     * 
-     * @param ability Vybrana schopnost.
      */
     public void increaseHp() {
         this.player.setMaxHp(this.player.getMaxHp() + 10);
@@ -79,8 +77,6 @@ public class Abilities {
 
     /**
      * Metoda increaseDamage zvysi silu hraca o 5.
-     * 
-     * @param ability Vybrana schopnost.
      */
     public void increaseDamage() {
         this.player.setDamage(this.player.getDamage() + 5);
@@ -88,8 +84,6 @@ public class Abilities {
 
     /**
      * Metoda increaseSpeed zvysi rychlost hraca o 1.
-     * 
-     * @param ability Vybrana schopnost.
      */
     public void increaseSpeed() {
         this.player.setSpeed(this.player.getSpeed() + 1);
@@ -97,8 +91,6 @@ public class Abilities {
 
     /**
      * Metoda decreaseShootDelay zvysi rychlost strelby hraca o 10ms.
-     * 
-     * @param ability Vybrana schopnost.
      */
     public void decreaseShootDelay() {
         this.player.setShootDelay(this.player.getShootDelay() - 10);

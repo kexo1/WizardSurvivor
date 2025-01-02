@@ -26,10 +26,10 @@ public class MouseInput extends MouseAdapter {
     /**
      * Konstruktor triedy MouseInput.
      * 
-     * @param manager
-     * @param spriteSheet
-     * @param spawner
-     * @param gameLoop
+     * @param manager objekt manazera
+     * @param spriteSheet spriteSheet, ktory obsahuje sprite pre objekt Orb
+     * @param spawner objekt spawner-u
+     * @param gameLoop objekt gameLoop
      */
     public MouseInput(ObjManager manager, SpriteSheet spriteSheet, Spawner spawner, GameLoop gameLoop) {
         this.manager = manager;
@@ -47,7 +47,7 @@ public class MouseInput extends MouseAdapter {
      * Metoda vytvara novy Orb, ktory bude vytvoreny na pozicii hraca a bude letiet smerom k pozicii mysi.
      * Metoda nastavuje cas poslednej strely.
      * 
-     * @param event
+     * @param event vstup z mysi
      */
     public void mousePressed(MouseEvent event) {
 
@@ -107,7 +107,7 @@ public class MouseInput extends MouseAdapter {
     /**
      * Metoda setDelay nastavuje oneskorenie medzi strelbou hraca.
      * 
-     * @param delay
+     * @param delay oneskorenie medzi strelbou
      */
     public void setDelay(int delay) {
         this.delay = delay;

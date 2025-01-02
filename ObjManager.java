@@ -27,8 +27,8 @@ public class ObjManager {
 
     
     /** 
-     * Metóda tick slúži na aktualizáciu všetkých objektov.
-     * Prejde všetky objekty v objList a zavolá metódu tick.
+     * Metoda tick sluzi na aktualizaciu vsetkych objektov.
+     * Prejde vsetky objekty v objList a zavola metodu tick.
      */
     public void tick() {
         for (int i = 0; i < this.objList.size(); i++) {
@@ -38,10 +38,10 @@ public class ObjManager {
     }
 
     /** 
-     * Metóda render slúži na vykreslenie všetkých objektov.
-     * Prejde všetky objekty v objList a zavolá metódu render.
+     * Metoda render sluzi na vykreslenie vsetkych objektov.
+     * Prejde vsetky objekty v objList a zavola metodu render.
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
         for (int i = 0; i < this.objList.size(); i++) {
@@ -51,28 +51,28 @@ public class ObjManager {
     }
 
     /** 
-     * Metóda addObj pridá objekt do objList.
+     * Metoda addObj prida objekt do objList.
      * 
-     * @param tempObj
+     * @param tempObj objekt, ktory sa ma pridat
      */
     public void addObj(GameObj tempObj) {
         this.objList.add(tempObj);
     }
 
     /** 
-     * Metóda removeObj odstráni objekt z objList.
+     * Metoda removeObj odstrani objekt z objList.
      * 
-     * @param tempObj
+     * @param tempObj objekt, ktory sa ma odstranit
      */
     public void removeObj(GameObj tempObj) {
         this.objList.remove(tempObj);
     }
 
     /** 
-     * Metóda clearEnemies odstráni všetky objekty s ID Enemy alebo Heal.
+     * Metoda clearEnemies odstrani vsetky objekty s ID Enemy alebo Heal.
      */
     public void clearEnemies() {
-        Iterator<GameObj> iterator = this.objList.iterator();                               // Pouzi iterator pre prechadzanie objektov, kedze normalne prechadzanie by mohlo preskocit nejake objekty
+        Iterator<GameObj> iterator = this.objList.iterator();                               // Pouzitie iterator-a pre prechadzanie objektov, kedze normalne prechadzanie by mohlo preskocit nejake objekty
         while (iterator.hasNext()) {                                                        // While loop pre prechadzanie objektov
             GameObj tempObj = iterator.next();                                              // Ziskaj dalsi objekt
             if (tempObj.getId() == GameObjID.Enemy || tempObj.getId() == GameObjID.Heal) {

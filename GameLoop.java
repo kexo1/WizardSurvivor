@@ -36,7 +36,7 @@ public class GameLoop extends Canvas implements Runnable {
      * Metoda main sluzi na spustenie hry.
      * Vytvori novy objekt GameLoop.
      * 
-     * @param args
+     * @param args argumenty pri spusteni hry (nie su potrebne)
      */
     public static void main(String[] args ) {
         new GameLoop();
@@ -54,7 +54,7 @@ public class GameLoop extends Canvas implements Runnable {
     private void init() {
         // Vytvori novy objekt ObjManager
         this.manager = new ObjManager();
-        // Nacitaj sprite sheety
+        // Nacitaj sprite sheet pre hraca, textury a projektil
         this.spriteSheetWizard = new SpriteSheet("/sprites/wizard-spritesheet.png");
         this.spriteSheetBrick = new SpriteSheet("/sprites/textures.png");
         this.spriteSheetOrb = new SpriteSheet("/sprites/projectile.png");
@@ -74,7 +74,7 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Metoda retry vymaze vsetkych nepriatelo a nastavi hracovi defaultne hodnoty.
+     * Metoda retry vymaze vsetkych nepriatelov a nastavi hracovi zakladne hodnoty.
      */
     public void retry() {
 
@@ -132,9 +132,9 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Metoda run je hlavnym hernym loopom, ktory sa stara o spravne fungovanie hry.
+     * Metoda run je hlavnym hernym cyklom, ktory sa stara o spravne fungovanie hry.
      * Metoda funguje na principe tick a render, ktore sa striedaju v nekonecnom cykle.
-     * Vypocet herneho loopu je zabezpeceny pomocou System.nanoTime() a Thread.sleep() ktore zabezpecuju spravne casovanie.
+     * Vypocet herneho cyklu je zabezpeceny pomocou System.nanoTime() a Thread.sleep() ktore zabezpecuju spravne casovanie.
      * Tento loop sa opakuje 60x za sekundu, pricom render sa vykresluje 141x za sekundu co zabezpecuje plynuly pohyb.
      * Hlavnou inspiraciou pre tuto metodu bola diskusia na StackOverflow, a jeho tvorcom je Notch, ktory je byvali programator hry Minecraft.
      * https://stackoverflow.com/questions/18283199/java-main-game-loop
@@ -170,7 +170,7 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Metoda start sluzi na spustenie herny loopu.
+     * Metoda start sluzi na spustenie herneho cyklu.
      * Metoda kontroluje, ci uz herny loop bezi, ak ano, tak sa metoda ukonci.
      * https://stackoverflow.com/questions/18283199/java-main-game-loop
      */
@@ -185,7 +185,7 @@ public class GameLoop extends Canvas implements Runnable {
     }
 
     /**
-     * Metoda stop sluzi na zastavenie herneho loopu.
+     * Metoda stop sluzi na zastavenie herneho cyklu.
      * Metoda kontroluje, ci uz herny loop bezi, ak nie, tak sa metoda ukonci.
      * https://stackoverflow.com/questions/10961714/how-to-properly-stop-the-thread-in-java
      */ 
@@ -198,7 +198,7 @@ public class GameLoop extends Canvas implements Runnable {
         this.isRunning = false;
 
         try {
-            this.thread.join();             // Pockaj na ukoncenie threadu
+            this.thread.join();             // Pockaj na ukoncenie threadu (vlakna)
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -217,11 +217,11 @@ public class GameLoop extends Canvas implements Runnable {
 
         BufferStrategy buffer = this.getBufferStrategy();  // Ziskaj buffer strategy
         if (buffer == null) {
-            this.createBufferStrategy(3);       // Prednacitaj 3 snimky
+            this.createBufferStrategy(3);       // Predcitaj 3 snimky
             return;
         }
 
-        Graphics graphics = buffer.getDrawGraphics();      // Ziskaj graficky objekt z bufferu 
+        Graphics graphics = buffer.getDrawGraphics();      // Ziskaj graficky objekt z buffer-u
         Graphics2D g2d = (Graphics2D)graphics;             // Ziskaj 2D graficky objekt ktory ma viacej moznosti na vykreslovanie (preferovane na vykreslovanie textu)
 
         // Vykresli pozadie z brickSprite
@@ -252,7 +252,7 @@ public class GameLoop extends Canvas implements Runnable {
         g2d.setColor(Color.black);
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRect(5, 5, this.manager.getPlayer().getMaxHp() * 2, 32);
-        // Vykrsli statistiky hraca
+        // Vykresli statistiky hraca
         g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(12f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Health: " + this.manager.getPlayer().getHp(), 5, 56);
@@ -282,7 +282,7 @@ public class GameLoop extends Canvas implements Runnable {
         g2d.setColor(Color.white);
         g2d.setFont(g2d.getFont().deriveFont(40f).deriveFont(java.awt.Font.BOLD));
         g2d.drawString("Retry", 480, 460);
-        // Vykresli obldznik okolo "Retry" textu
+        // Vykresli obdlznik okolo "Retry" textu
         g2d.setStroke(new BasicStroke(5));
         g2d.drawRect(440, 410, 180, 70);
     }

@@ -13,7 +13,8 @@ public class SpriteSheet {
 
     /**
      * Konstruktor triedy SpriteSheet.
-     * @param path Cesta k obrazku.
+     * 
+     * @param path cesta k obrazku.
      */
     public SpriteSheet(String path) {
         try {
@@ -25,11 +26,12 @@ public class SpriteSheet {
 
     /**
      * Metoda getSprite vrati jednu cast obrazku na zaklade zadanych parametrov.
-     * @param imgSizeX Sirka obrazku.
-     * @param imgSizeY Vyska obrazku.
-     * @param col Stlpec obrazku.
-     * @param row Riadok obrazku.
-     * @return BufferedImage
+     * 
+     * @param imgSizeX sirka obrazku.
+     * @param imgSizeY vyska obrazku.
+     * @param col stlpec obrazku.
+     * @param row riadok obrazku.
+     * @return finalna cast obrazku v podobe BufferedImage.
      */
     public BufferedImage getSprite(int imgSizeX, int imgSizeY, int col, int row) {
         return this.spriteSheet.getSubimage((col * (imgSizeX)) - imgSizeX, (row * imgSizeY) - imgSizeY, imgSizeX, imgSizeY);
@@ -37,11 +39,12 @@ public class SpriteSheet {
 
     /**
      * Metoda getSpriteSheetRow vrati riadok obrazku na zaklade zadanych parametrov.
-     * @param imgSizeX Sirka obrazku.
-     * @param imgSizeY Vyska obrazku.
-     * @param row Riadok obrazku.
-     * @param numberOfSprites Pocet obrazkov v riadku.
-     * @return BufferedImage[]
+     * 
+     * @param imgSizeX sirka obrazku.
+     * @param imgSizeY vyska obrazku.
+     * @param row riadok obrazku.
+     * @param numberOfSprites pocet obrazkov v riadku.
+     * @return array BufferedImage[] obsahujuci jednotlive casti obrazkov pouzitelne v animacii.
      */
     public BufferedImage[] getSpriteSheetRow(int imgSizeX, int imgSizeY, int row, int numberOfSprites) {
         this.spriteSheetRow = new BufferedImage[numberOfSprites];

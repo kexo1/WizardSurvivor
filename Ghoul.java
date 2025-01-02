@@ -41,12 +41,12 @@ public class Ghoul extends GameObj {
     /**
      * Konstruktor triedy Ghoul.
      * 
-     * @param x
-     * @param y
-     * @param gameObjID
-     * @param manager
-     * @param player
-     * @param spriteSheet
+     * @param x x-ova suradnica objektu
+     * @param y y-ova suradnica objektu
+     * @param gameObjID identifikator objektu
+     * @param manager objekt manazera
+     * @param player objekt hraca
+     * @param spriteSheet spriteSheet, ktory obsahuje sprit-y pre animaciu   
      */
     public Ghoul(int x, int y, GameObjID gameObjID, ObjManager manager, Player player, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
@@ -63,7 +63,7 @@ public class Ghoul extends GameObj {
     }
     
     /**
-     * Metoda tick aktualizuje poziciu objektu, detekuje kolizie a pohybuje sa smerom k hracovi.
+     * Metoda tick aktualizuje poziciu objektu, deteguje kolizie a pohybuje sa smerom k hracovi.
      */
     public void tick() {
         this.updatePosition();
@@ -72,10 +72,10 @@ public class Ghoul extends GameObj {
     }
 
     /** 
-     * Metoda render zabezpecuje vykreslenie objektu Ghoul pomocou animovania spritu
+     * Metoda render zabezpecuje vykreslenie objektu Ghoul pomocou animovania sprit-u
      * Jeho animacia zavisi od toho, ci sa pohybuje alebo utoci na hraca.
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
         if (this.length > this.hitDistance) {
@@ -90,7 +90,7 @@ public class Ghoul extends GameObj {
     /**
      * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
      * 
-     * @return Rectangle
+     * @return obdlznik kolizie
      */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 86, 86);

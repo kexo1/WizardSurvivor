@@ -16,7 +16,7 @@ public abstract class GameObj {
      * Konstruktor triedy GameObj vytvori novy objekt s ID, ktore je definovane v enum GameObjID.
      * @param x x-ova suradnica objektu
      * @param y y-ova suradnica objektu
-     * @param id ID objektu
+     * @param id identifikator objektu
      * @param manager objekt ObjManager
      * @param spriteSheet objekt SpriteSheet, ktory obsahuje sprite sheet s obrazkami objektov
      */
@@ -31,7 +31,7 @@ public abstract class GameObj {
 
     /**
      * Metoda render sluzi na vykreslenie objektov v hre.
-     * @param graphics grafika
+     * @param graphics graficky kontext
      */
     public abstract void render(Graphics graphics);
 

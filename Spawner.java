@@ -43,11 +43,11 @@ public class Spawner extends GameObj {
     /**
      * Konstruktor triedy Spawner.
      * 
-     * @param x
-     * @param y
-     * @param gameObjID
-     * @param manager
-     * @param spriteSheet
+     * @param x x-ova suradnica objektu, neni pouzita
+     * @param y y-ova suradnica objektu, neni pouzita
+     * @param gameObjID identifikator objektu
+     * @param manager objekt manazera
+     * @param spriteSheet spriteSheet, ktory nema v sebe sprite, ale je potrebny pre volanie konstruktor predka
      */
     public Spawner(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet) {
         super(x, y, gameObjID, manager, spriteSheet);
@@ -71,9 +71,9 @@ public class Spawner extends GameObj {
     }
 
     /**
-     * Metoda render zabezpecuje vykreslenie abilit na obrazovku pocas vyberu.
+     * Metoda render zabezpecuje vykreslenie schopnosti na obrazovku pocas vyberu.
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
         if (this.waveState == WaveState.CHOOSING) {
@@ -227,7 +227,7 @@ public class Spawner extends GameObj {
     /**  
      * Metoda setWaveState nastavi stav vlny a nastavi casovac na aktualny cas.
      * 
-     * @param waveState
+     * @param waveState stav vlny (spawning, countdown, choosing)
      */
     public void setWaveState(WaveState waveState) {
         this.lastTimeCountdown = System.currentTimeMillis();
@@ -241,7 +241,7 @@ public class Spawner extends GameObj {
     /**
      * Metoda getCounter vrati zostavajuci cas do konca vlny.
      * 
-     * @return int
+     * @return zostavajuci cas do konca vlny
      */
     public int getCounter() {
         return ((int)(this.waveCountdown - (int)((this.currentTime - this.lastTimeCountdown) / 1000))) - 1;

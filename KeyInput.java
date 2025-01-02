@@ -18,9 +18,9 @@ public class KeyInput extends KeyAdapter {
     /**
      * Konstruktor triedy KeyInput.
      * 
-     * @param manager
-     * @param spawner
-     * @param gameLoop
+     * @param manager objekt manazera
+     * @param spawner objekt spawner-u
+     * @param gameLoop objekt gameLoop
      */
     public KeyInput(ObjManager manager, Spawner spawner, GameLoop gameLoop) {
         this.manager = manager;
@@ -33,7 +33,7 @@ public class KeyInput extends KeyAdapter {
      * Metoda nastavuje smer hraca podla stlacenej klavesy a podla toho, ci hrac zije alebo ci sa nachadza v stave vyberu vylepseni.
      * Tiez moze zmenit texturu pozadia stlacenim klavesy SPACE.
      * 
-     * @param event
+     * @param event vstup od klavesnice
      */
     public void keyPressed(KeyEvent event) {
         
@@ -68,7 +68,7 @@ public class KeyInput extends KeyAdapter {
      * Metoda keyReleased spracovava pustene klavesy.
      * Metoda nastavuje smer hraca podla pustenej klavesy.
      * 
-     * @param event
+     * @param event vstup od klavesnice
      */
     public void keyReleased(KeyEvent event) {
 

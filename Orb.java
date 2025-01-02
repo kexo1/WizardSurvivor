@@ -13,7 +13,7 @@ public class Orb extends GameObj {
     private ObjManager manager;
     private BufferedImage sprite;
 
-    // Attributy
+    // Atributy
     private long timer = System.currentTimeMillis();
     private final int speed = 10;
     private float velX;
@@ -24,14 +24,14 @@ public class Orb extends GameObj {
     /**
      * Konstruktor triedy Orb.
      * 
-     * @param x
-     * @param y
-     * @param gameObjID
-     * @param manager
-     * @param spriteSheet
-     * @param sprite
-     * @param mouseX
-     * @param mouseY
+     * @param x x-ova suradnica objektu
+     * @param y y-ova suradnica objektu
+     * @param gameObjID identifikator objektu
+     * @param manager objekt manazera
+     * @param spriteSheet spriteSheet, ktory nema v sebe sprite, ale je potrebny pre volanie konstruktera predka
+     * @param sprite sprite, ktory sa pouzije na vykreslenie objektu
+     * @param mouseX x-ova suradnica mysky
+     * @param mouseY y-ova suradnica mysky
      */
     public Orb(int x, int y, GameObjID gameObjID, ObjManager manager, SpriteSheet spriteSheet, BufferedImage sprite, int mouseX, int mouseY) {
         super(x, y, gameObjID, manager, spriteSheet);
@@ -51,9 +51,9 @@ public class Orb extends GameObj {
     }
     
     /** 
-     * Metoda render zabezpecuje vykreslenie objektu Orb pomocou spritu
+     * Metoda render zabezpecuje vykreslenie objektu Orb pomocou sprit-u
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
         graphics.drawImage(this.sprite, this.x, this.y, 16, 16, null);
@@ -62,7 +62,7 @@ public class Orb extends GameObj {
     /**
      * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
      * 
-     * @return Rectangle
+     * @return obdlznik kolizie
      */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 12, 12);
@@ -81,8 +81,8 @@ public class Orb extends GameObj {
 
     private void normalizeDirection(int mouseX, int mouseY) {
 
-        double dx = mouseX - this.x;    // Rozdiel medzi x-ovymi suradnicami aktualnej pozicie a pozicie mysky
-        double dy = mouseY - this.y;    // Rozdiel medzi y-ovymi suradnicami aktualnej pozicie a pozicie mysky
+        double dx = mouseX - this.x;    // Rozdiel medzi x suradnicami aktualnej pozicie a pozicie mysky
+        double dy = mouseY - this.y;    // Rozdiel medzi y suradnicami aktualnej pozicie a pozicie mysky
 
         double length = Math.sqrt(dx * dx + dy * dy);   // Vypocet na urcenie dlzky vektora (Pytagorova veta: https://tinyurl.com/vpk3ay6h)
         double normalizedX = dx / length;               // Normalizovany smer x-ovej zlozky (hodnota medzi -1 a 1)

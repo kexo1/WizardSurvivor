@@ -27,11 +27,12 @@ public class SpriteAnimation {
 
     /**
      * Konstruktor triedy SpriteAnimation.
-     * @param spriteList Pole obrazkov pre animaciu.
-     * @param x X-ova pozicia objektu.
-     * @param y Y-ova pozicia objektu.
-     * @param width Sirka obrazka.
-     * @param height Vyska obrazka.
+     * 
+     * @param spriteList pole obrazkov pre animaciu.
+     * @param x x-ova pozicia objektu.
+     * @param y y-ova pozicia objektu.
+     * @param width sirka obrazka.
+     * @param height vyska obrazka.
      */
     public SpriteAnimation(BufferedImage[] spriteList, int x, int y, int width, int height) {
         this.spriteList = spriteList;
@@ -49,8 +50,8 @@ public class SpriteAnimation {
      * Animacia je obmedzena rychlostou frameSpeed.
      * Funkcia animateSprite je volana v render metodach.
      * 
-     * @param graphics Graficky kontext.
-     * @param flip True, ak ma byt obrazok otoceny.
+     * @param graphics graficky kontext.
+     * @param flip true, ak ma byt obrazok otoceny.
      */
     public void animateSprite(Graphics graphics, boolean flip) {
 

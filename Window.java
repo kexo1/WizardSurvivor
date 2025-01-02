@@ -20,7 +20,7 @@ public class Window {
         frame.setMaximumSize(new Dimension(width, height));
         frame.setMinimumSize(new Dimension(width, height));
         frame.add(game);                                        // Pridaj objekt GameLoop do okna
-        frame.setResizable(false);                    // Nastav okno na nerozsirovatelne
+        frame.setResizable(false);                    // Nastav okno na nerozsirovane
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   // Nastav operaciu pri zatvoreni okna
         frame.setLocationRelativeTo(null);                    // Nastav polohu okna na stred obrazovky
         frame.setVisible(true);                             

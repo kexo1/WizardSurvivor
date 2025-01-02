@@ -38,11 +38,11 @@ public class Player extends GameObj {
     /**
      * Konstruktor triedy Player.
      * 
-     * @param x
-     * @param y
-     * @param id
-     * @param manager
-     * @param spriteSheet
+     * @param x x-ova suradnica hraca
+     * @param y y-ova suradnica hraca
+     * @param id identifikator hraca
+     * @param manager objekt manažéra
+     * @param spriteSheet spriteSheet, ktory obsahuje sprity pre animaciu
      */
     public Player(int x, int y, GameObjID id, ObjManager manager, SpriteSheet spriteSheet) {
         super(x, y, id, manager, spriteSheet);
@@ -58,7 +58,7 @@ public class Player extends GameObj {
     }
 
     /**
-     * Metoda tick aktualizuje poziciu hraca, detekuje kolizie, pohyb hraca,
+     * Metoda tick aktualizuje poziciu hraca, deteguje kolizie, pohyb hraca,
      * kontroluje ci hrac nevypadol z mapy, urci ci sa ma obrazok hraca otocit, a aktualizuje highscore.
      */
     public void tick() {
@@ -75,7 +75,7 @@ public class Player extends GameObj {
      * Jeho animacia zavisi od toho, ci sa pohybuje alebo stoji.
      * Ak hrac nema ziadne hp (pocet zivotov), tak sa nevykresli.
      * 
-     * @param graphics
+     * @param graphics graficky kontext
      */
     public void render(Graphics graphics) {
 
@@ -95,7 +95,7 @@ public class Player extends GameObj {
     /**
      * Metoda getBounds vrati obdlznik, ktory reprezentuje kolizny obdlznik objektu.
      * 
-     * @return Rectangle
+     * @return obdlznik kolizie
      */
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, 32, 64);
@@ -194,7 +194,7 @@ public class Player extends GameObj {
     /**
      * Metoda takeDamage znizuje pocet zivotov hraca.
      * 
-     * @param damage
+     * @param damage hodnota, o ktoru sa znizi pocet zivotov
      */
     public void takeDamage(int damage) {
         this.hp -= damage;
