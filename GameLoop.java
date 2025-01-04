@@ -132,8 +132,7 @@ public class GameLoop extends Canvas implements Runnable {
      * Metoda funguje na principe tick a render, ktore sa striedaju v nekonecnom cykle.
      * Vypocet herneho cyklu je zabezpeceny pomocou System.nanoTime() a Thread.sleep() ktore zabezpecuju spravne casovanie.
      * Tento loop sa opakuje 60x za sekundu, pricom render sa vykresluje 141x za sekundu co zabezpecuje plynuly pohyb.
-     * Hlavnou inspiraciou pre tuto metodu bola diskusia na StackOverflow, a jeho tvorcom je Notch, ktory je byvali programator hry Minecraft.
-     * @author Notch
+     * Hlavnou inspiraciou pre tuto metodu bola diskusia na StackOverflow.
      */
     public void run() {
 
@@ -170,7 +169,6 @@ public class GameLoop extends Canvas implements Runnable {
      * Zdroj: https://stackoverflow.com/questions/18283199/java-main-game-loop
      * Metoda start sluzi na spustenie herneho cyklu.
      * Metoda kontroluje, ci uz herny loop bezi, ak ano, tak sa metoda ukonci.
-     * @author Notch
      */
     private void start() {
 

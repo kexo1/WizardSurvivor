@@ -59,7 +59,7 @@ public class SpriteAnimation {
         this.lastTime = now;
 
         int frameSpeed = 100;
-        if (this.timer > frameSpeed) {                 // Ak casovac neprekrocil rychlost
+        if (this.timer > frameSpeed) {                      // Ak casovac neprekrocil rychlost
             this.index++;                                   // Posun na dalsi obrazok
             this.timer = 0;                                 // Reset casovaca    
             if (this.index >= this.spriteList.length) {     // Ak index prekrocil velkost pola

@@ -4,11 +4,6 @@
  */
 public enum GameObjID {
     /**
-     * hrac, zobrazeny ako carodejnik (wizard)
-     */
-    Player(),
-
-    /**
      * objekt, ktory hrac zbiera na doplnenie zivota
      */
     Heal(),
@@ -17,6 +12,11 @@ public enum GameObjID {
      * objekt, ktory hrac vystreli na ublizenie nepriatelom
      */
     Orb(),
+
+    /**
+     * hrac, zobrazeny ako carodejnik (wizard)
+     */
+    Player(),
 
     /**
      * objekt, ktory nepriatel (Wasp) vystreli na ublizenie hracovi

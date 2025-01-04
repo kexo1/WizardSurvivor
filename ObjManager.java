@@ -13,10 +13,10 @@ import java.awt.Graphics;
 public class ObjManager {
 
     // References
-    private final LinkedList<GameObj> objList = new LinkedList<>();
+    private final LinkedList<GameObj> objList;
     private Player player;
 
-    // Attributes
+    // Player movement
     private boolean up = false;
     private boolean down = false;
     private boolean left = false;
@@ -25,7 +25,9 @@ public class ObjManager {
     /**
      * Konstruktor triedy ObjManager.
      */
-    public ObjManager() { }
+    public ObjManager() {
+        this.objList = new LinkedList<>();
+    }
 
     /** 
      * Metoda tick sluzi na aktualizaciu vsetkych objektov.
@@ -33,8 +35,8 @@ public class ObjManager {
      */
     public void tick() {
         for (int i = 0; i < this.objList.size(); i++) {
-            GameObj tempObj = this.objList.get(i);
-            tempObj.tick();
+            GameObj obj = this.objList.get(i);
+            obj.tick();
         }
     }
 
@@ -46,27 +48,27 @@ public class ObjManager {
      */
     public void render(Graphics graphics) {
         for (int i = 0; i < this.objList.size(); i++) {
-            GameObj tempObj = this.objList.get(i);
-            tempObj.render(graphics);
+            GameObj obj = this.objList.get(i);
+            obj.render(graphics);
         }
     }
 
     /** 
      * Metoda addObj prida objekt do objList.
      * 
-     * @param tempObj objekt, ktory sa ma pridat
+     * @param obj objekt, ktory sa ma pridat
      */
-    public void addObj(GameObj tempObj) {
-        this.objList.add(tempObj);
+    public void addObj(GameObj obj) {
+        this.objList.add(obj);
     }
 
     /** 
      * Metoda removeObj odstrani objekt z objList.
      * 
-     * @param tempObj objekt, ktory sa ma odstranit
+     * @param obj objekt, ktory sa ma odstranit
      */
-    public void removeObj(GameObj tempObj) {
-        this.objList.remove(tempObj);
+    public void removeObj(GameObj obj) {
+        this.objList.remove(obj);
     }
 
     /** 
@@ -75,8 +77,8 @@ public class ObjManager {
     public void clearEnemies() {
         Iterator<GameObj> iterator = this.objList.iterator();                               // Pouzitie iterator-a pre prechadzanie objektov, kedze normalne prechadzanie by mohlo preskocit nejake objekty
         while (iterator.hasNext()) {                                                        // While loop pre prechadzanie objektov
-            GameObj tempObj = iterator.next();                                              // Ziskaj dalsi objekt
-            if (tempObj.getId() == GameObjID.Enemy || tempObj.getId() == GameObjID.Heal) {
+            GameObj obj = iterator.next();                                                  // Ziskaj dalsi objekt
+            if (obj.getId() == GameObjID.Enemy || obj.getId() == GameObjID.Heal) {
                 iterator.remove();
             }
         }
