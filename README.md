@@ -1,7 +1,7 @@
 <div align = center>
 
 # WizardSurvivor
-### Simple arena type game with Wizard!
+### Simple arena game with Wizard!
 
 Fight enemies and survive waves that get harder
 <img src="readmeFiles/gameplay.png" alt="Gameplay"/>
